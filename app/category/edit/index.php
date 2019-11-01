@@ -47,7 +47,7 @@ $paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern
 $limit = ($currentPage - 1) * $itemsPerPage.',' .$itemsPerPage;
 
 $con = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
-$sql = "SELECT * FROM `categories` LIMIT ".$limit;
+$sql = "SELECT * FROM `categories` ORDER BY `date_created` DESC LIMIT ".$limit;
 $result = mysqli_query($con, $sql);
 
 ?>

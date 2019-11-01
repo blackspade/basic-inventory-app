@@ -37,7 +37,7 @@ $paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern
 $limit = ($currentPage - 1) * $itemsPerPage.',' .$itemsPerPage;
 
 $con = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
-$sql = "SELECT * FROM `master_inventory` WHERE `item_status` = 'NEW' LIMIT ".$limit;
+$sql = "SELECT * FROM `master_inventory` WHERE `item_status` = 'NEW' ORDER BY `date_created` DESC LIMIT ".$limit;
 $result = mysqli_query($con, $sql);
 
 ?>
@@ -586,7 +586,7 @@ function ups(e){
 		var id = i.attributes[3].nodeValue;
 		var nv = i.value.toUpperCase();
 		var p = i.parentNode;
-		var table = "price";
+		var table = "item_price";
 		
 		if(i.attributes[2].nodeValue != nv){
 			

@@ -27,10 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 	$uploadOk = 1;
 	
 	if($check == false) {
-        redirect::to($_SERVER['PHP_SELF']."?status=1");
+        //redirect::to($_SERVER['PHP_SELF']."?status=1");
     } 
 	
-	if ($_FILES["masterInventoryImage"]["size"] > 3000000) {
+	if ($_FILES["masterInventoryImage"]["size"] > 5000000) {
 		redirect::to($_SERVER['PHP_SELF']."?status=2");
 	}
 	
@@ -369,6 +369,9 @@ window.onload = function(){
 	var myParam = location.search.split('status=')[1];
 	if(myParam == "0"){
 		err.innerHTML = "<div class='alert alert-success'>Item has been created successfully.</div>";
+		setTimeout(function(){err.innerHTML="";},3000);
+	}else if(myParam == "1"){
+		err.innerHTML = "<div class='alert alert-warning'>Image size is greater than 4 mb.</div>";
 		setTimeout(function(){err.innerHTML="";},3000);
 	}
 	createItemNumber();

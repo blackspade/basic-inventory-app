@@ -189,7 +189,7 @@ if(isset($_SESSION['sessionType']) == 1){
                                             </label>
                                             <div class="col-lg-6">
 												<div id="categoryErrMsg"></div>
-                                                <input style="text-transform: uppercase;" type="text" onblur="st(event);" class="form-control" id="categoryName" name="category" placeholder="Enter Category Name" maxlength="30">
+                                                <input style="text-transform: uppercase;" type="text" onblur="st(event);" class="form-control" id="categoryName" name="category" placeholder="Enter Category Name" maxlength="35">
                                             </div>
                                         </div>
                                         
