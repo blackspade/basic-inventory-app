@@ -10,9 +10,7 @@ spl_autoload_register(function($class){
 });
 
 
-if(isset($_SESSION['sessionType']) == 1){
-
-}else{
+if(!(isset($_SESSION['sessionType']) == 1)){
 	redirect::to("../../../login/?status=nosession");
 }
 
@@ -281,10 +279,10 @@ function itemAction(e){
 	
 	switch(action) {
 	  case "PREVIEW":
-		console.log(itemNum + "P");
+		window.location.href="../preview/?item=" + itemNum;
 		break;
 	  case "ADD":
-		console.log(itemNum + "A");
+		window.location.href="../advance/?item=" + itemNum;
 		break;
 	  case "EDIT":
 		console.log(itemNum + "E");

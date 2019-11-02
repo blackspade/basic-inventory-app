@@ -22,7 +22,7 @@ $count = mysqli_query($first_connection,$count_sql);
 $r = mysqli_fetch_array($count);
 
 $totalItems = $r[0];
-$itemsPerPage = 15;
+$itemsPerPage = 10;
 $currentPage = 0;
 
 if( isset($_GET['page']) ){
@@ -674,6 +674,7 @@ function ud(e,id){
 			t.innerText = "";
 		
 		t.appendChild(inp);
+		
 	}else{
 		e.preventDefault();
 	}

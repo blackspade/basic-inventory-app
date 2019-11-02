@@ -7,21 +7,10 @@ spl_autoload_register(function($class){
 });
 
 
-if(isset($_SESSION['sessionType']) == 1){
-
-/*
-echo $_SESSION['sessionType'];
-echo "<br />";
-echo $_SESSION['sessionId'];
-echo "<br />";
-echo $_SESSION['email'];
-echo "<br />";
-echo $_SESSION['name'];
-*/
-	
-}else{
-	redirect::to("../login/?status=nosession");
+if(!(isset($_SESSION['sessionType']) == 1)){
+	redirect::to("../../../login/?status=nosession");
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
