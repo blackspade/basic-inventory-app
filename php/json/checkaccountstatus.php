@@ -17,15 +17,15 @@ if(is_ajax_request()){
 	$arr = [];
 	
 	if (!($stmt = $con->prepare($sql))) {
-		$arr["status"] = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+		$arr["error"] = "Prepare failed";
 	}
 
 	if (!$stmt->bind_param("s", $email)){
-		$arr["status"] = "Binding parameters failed: (" . $stmt->errno . ") " .$stmt->error;
+		$arr["error"] = "Binding parameters failed";
 	}
 
 	if (!$stmt->execute()) {
-		$arr["status"] = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+		$arr["error"] = "Execute failed";
 	}else{
 	    $stmt->store_result();
 		$c = $stmt->num_rows;

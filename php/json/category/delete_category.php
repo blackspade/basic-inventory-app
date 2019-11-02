@@ -31,17 +31,20 @@ if(is_ajax_request() && isset($_SESSION['sessionType']) == 1){
 		
 		if (!($stmt = $con->prepare($sql))) {
 		//TEST PURPOSES ONLY
-		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+		//echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+		$arr["error"] = "PREPARE FAILED";
 		}
 
 		if (!$stmt->bind_param("sss",$s,$user,$id)){
 			//TEST PURPOSES ONLY
-			echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+			//echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+			$arr["error"] = "BINDING FAILED";
 		}
 
 		if (!$stmt->execute()) {
 			//TEST PURPOSES ONLY
-			echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+			//echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+			$arr["error"] = "EXECUTE FAILED";
 		}else{
 			$con->close();
 			$arr["status"] = 1;
@@ -55,6 +58,6 @@ if(is_ajax_request() && isset($_SESSION['sessionType']) == 1){
 	}
 	
 }else{
-	exit();
+	exit;
 }
 ?>

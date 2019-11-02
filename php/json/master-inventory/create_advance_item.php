@@ -58,6 +58,6 @@ if(is_ajax_request() && isset($_SESSION['sessionType']) == 1){
 	}
 	
 }else{
-	exit();
+	exit;
 }
 ?>

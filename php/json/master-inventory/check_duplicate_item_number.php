@@ -17,16 +17,15 @@ if(is_ajax_request() && isset($_SESSION['sessionType']) == 1){
 	$arr = [];
 	
 	if (!($stmt = $con->prepare($sql))) {
-		//TEST PURPOSES ONLY
-		echo "Prepare failed:";
+		$arr["error"] = "PREPARE FAILED";
 	}
 	
 	if (!$stmt->bind_param("i", $itemNum)){
-		//$arr["status"] = "Binding parameters failed: (" . $stmt->errno . ") " .$stmt->error;
+		$arr["error"] = "BINDING FAILED";
 	}
 
 	if (!$stmt->execute()) {
-		//$arr["status"] = "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+		$arr["error"] = "EXECUTE FAILED";
 	}else{
 	    $stmt->store_result();
 		$c = $stmt->num_rows;
