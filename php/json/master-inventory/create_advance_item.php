@@ -9,12 +9,15 @@ spl_autoload_register(function($class){
 if(is_ajax_request() && isset($_SESSION['sessionType']) == 1){
 	
 	$id = hyper_escape($_GET['id']);
-	$string = strtoupper(hyper_escape($_GET['update']));
-	$table = hyper_escape($_GET['table']);
+	$item_num = strtoupper(hyper_escape($_GET['itemNum']));
+
 	$user_type = hyper_escape($_SESSION['sessionType']);
 	$user = hyper_escape($_SESSION['sessionType']."|".$_SESSION['sessionId']."|".$_SESSION['name']);
 	$con = new mysqli(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
-	$sql = "UPDATE `master_inventory` SET `{$table}`= ?, `last_edit_by`= ? WHERE `id` = ?";	
+	
+	$sql = "UPDATE `master_inventory` SET `item_status` = ?, `last_edit_by`= ? WHERE `id` = ?";	
+	
+	$status = "ACTIVE";
 	
 	$arr = [];
 	
@@ -26,7 +29,7 @@ if(is_ajax_request() && isset($_SESSION['sessionType']) == 1){
 			$arr['error'] = "PREPARED FAILED";
 		}
 
-		if (!$stmt->bind_param("sss",$string,$user,$id)){
+		if (!$stmt->bind_param("sss",$status,$user,$id)){
 			//TEST PURPOSES ONLY
 			//echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
 			$arr['error'] = "BINDING FAILED";
@@ -37,12 +40,18 @@ if(is_ajax_request() && isset($_SESSION['sessionType']) == 1){
 			//echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
 			$arr['error'] = "EXECUTE FAILED";
 		}else{
+			$con2 = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
+			$sql2 = "INSERT INTO `master_inventory_advance`(`item_number`, `created_by`,`qty`) VALUES ('{$item_num}','{$user}',1)";
+			mysqli_query($con2,$sql2);
+			mysqli_close($con2);
+			
 			$con->close();
 			$arr["status"] = 1;
 			echo json_encode($arr);
 		}
-		
+
 	}else{
+	
 		$con->close();
 		$arr["status"] = 2;
 		echo json_encode($arr);

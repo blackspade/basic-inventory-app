@@ -209,7 +209,7 @@ $result = mysqli_query($con, $sql);
 													return '<button onclick="setCategory(event,'.$id.','.$i.')" type="button" class="btn mb-1 btn-warning">Select Category <span class="btn-icon-right"><i class="fa fa-archive"></i></span>
                                     </button>';
 												}else{
-													return '<button onclick="createNewItem(event,'.$id.')" type="button" class="btn mb-1 btn-primary">Create Item <span class="btn-icon-right"><i class="fa fa-check"></i></span>
+													return '<button onclick="createNewItem(event,'.$id.','.$i.')" type="button" class="btn mb-1 btn-primary">Create Item <span class="btn-icon-right"><i class="fa fa-check"></i></span>
                                     </button>';
 												}
 											}
@@ -271,9 +271,39 @@ var err = document.getElementById("newEditErrMsg");
 var ust = document.getElementById("userType");
 var editTrigger = false;
 
-function createNewItem(e,id){
-	console.log(e.target);
-	console.log(id);
+window.onload = function(){
+	var myParam = location.search.split('status=')[1];
+	if(myParam == "0"){
+		err.innerHTML = "<div class='alert alert-success'>Item has been created successfully.</div>";
+		setTimeout(function(){err.innerHTML="";},3000);
+	}
+}
+
+
+function createNewItem(e,id,i){
+	
+	var item_id  = id;
+	var item_num = i;	
+	var item_num_page = e.target.parentNode.parentNode.children[2].textContent;
+	
+	if(parseInt(item_num_page) === item_num){
+		var xhr = new XMLHttpRequest();
+			var url = '../../../php/json/master-inventory/create_advance_item.php?id=' + item_id + "&itemNum=" + item_num;
+			xhr.open('GET',url, true);
+			xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+			xhr.onreadystatechange = function(){
+				if (xhr.readyState == 4 && xhr.status == 200) {
+					var s = JSON.parse(xhr.responseText);					
+					if(s.status == 1){
+						window.location.href= "./?status=0";
+					}else{
+						window.location.href= "./?status=1";
+					}
+				}
+			};
+			xhr.send();
+	}
+	
 }
 
 function setCategory(e,id,num){
