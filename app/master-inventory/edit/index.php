@@ -22,7 +22,7 @@ $count = mysqli_query($first_connection,$count_sql);
 $r = mysqli_fetch_array($count);
 
 $totalItems = $r[0];
-$itemsPerPage = 15;
+$itemsPerPage = 10;
 $currentPage = 0;
 
 if( isset($_GET['page']) ){
@@ -192,7 +192,12 @@ $result = mysqli_query($con, $sql);
 													 '<td>'.$row[1].'</td>'.
 													 '<td>'.$row[3].'</td>'.
 													 '<td>'.create_select_box($row[4],$row[0]).'</td>'.											
-													 '<td></td>'.
+													 '<td>
+														<button data-item-num="'.$row[1].'" onclick="itemAction(event);" data-action="PREVIEW" class="btn btn-primary"  data-toggle="tooltip" data-placement="top" title="Preview Item"><span class="fa fa-eye" aria-hidden="true"></span></button>
+														<button data-item-num="'.$row[1].'" onclick="itemAction(event);" data-action="ADD" class="btn btn-info"  data-toggle="tooltip" data-placement="top" title="Add Advance Data"><i class="fa fa-plus-square" aria-hidden="true"></i></button>
+														<button data-item-num="'.$row[1].'" onclick="itemAction(event);" data-action="EDIT" class="btn btn-warning"  data-toggle="tooltip" data-placement="top" title="Edit Item"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+														<button data-item-num="'.$row[1].'" onclick="itemAction(event);" data-action="DELETE" class="btn btn-danger"  data-toggle="tooltip" data-placement="top" title="Deleted Item"><i class="fa fa-trash" aria-hidden="true"></i></button>
+													 </td>'.
 													 '</tr>';
 													
 											}
@@ -227,7 +232,7 @@ $result = mysqli_query($con, $sql);
 						<div class="card-body">
 							<h4 class="card-title">Quick Hints</h4>							
 							<ul id="hints">
-								<li>Double click the <u>Item Name</u>, <u>Manufacturer</u>, <u>Model</u>, <u>Year</u>, <u>Price</u> and <u>Description</u> to update the text. Press the (ESC) key to cancel change and (ENTER) key to save.</li>
+								<li>Hover over the action buttons to see what operations can be performed.</li>
 							</ul>
 						</div>
 					</div>
@@ -260,6 +265,37 @@ window.onload = function(){
 		//err.innerHTML = "<div class='alert alert-success'>Item has been created successfully.</div>";
 		//setTimeout(function(){err.innerHTML="";},3000);
 	}
+}
+
+function itemAction(e){
+	var evt = e.target;
+	var e;
+	if(evt.localName != "button"){
+		e = evt.parentNode;		
+	}else{
+		e = evt;
+	}
+	var itemNum = e.attributes[0].nodeValue;
+	var action = e.attributes[2].nodeValue;
+	
+	
+	switch(action) {
+	  case "PREVIEW":
+		console.log(itemNum + "P");
+		break;
+	  case "ADD":
+		console.log(itemNum + "A");
+		break;
+	  case "EDIT":
+		console.log(itemNum + "E");
+		break;
+      case "DELETE":
+		console.log(itemNum + "D");
+		break; 		
+	  default:
+		console.log("CASE SWITCH FAILED!");
+	} 
+	
 }
 
 function us(e){
