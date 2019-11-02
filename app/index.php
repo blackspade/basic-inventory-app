@@ -142,8 +142,8 @@ echo $_SESSION['name'];
                     <div class="col-lg-3 col-sm-6">
                         <div class="card gradient-1">
                             <div class="card-body">
-                                <h3 class="card-title text-white"># of Inventory Items</h3>
-                                <div class="d-inline-block">
+                                <h3 class="card-title text-white">Inventory Items</h3>
+                                <div id="inventoryCount" class="d-inline-block">
                                     <h2 class="text-white"></h2>
                                     <p class="text-white mb-0"></p>
                                 </div>
@@ -154,8 +154,8 @@ echo $_SESSION['name'];
                     <div class="col-lg-3 col-sm-6">
                         <div class="card gradient-2">
                             <div class="card-body">
-                                <h3 class="card-title text-white"># of Categories</h3>
-                                <div class="d-inline-block">
+                                <h3 class="card-title text-white">Categories</h3>
+                                <div id="categoryCount" class="d-inline-block">
                                     <h2 class="text-white"></h2>
                                     <p class="text-white mb-0"></p>
                                 </div>
@@ -178,7 +178,7 @@ echo $_SESSION['name'];
                                     <h5 class="text-muted">Quick Links</h5>
                                     
                                     <div class="mt-4">
- 
+										</span><i class="fa fa-plus" aria-hidden="true"></i><a href="./master-inventory/add/"> Add New Item</a></span>	
                                     </div>
                                     <div class="mt-4">
 
