@@ -140,6 +140,7 @@ $result = mysqli_query($con, $sql);
 			<div class="row page-titles mx-0">
 				<div class="col p-md-0">
 					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="javascript:void(0)">Master Inventory</a></li>
 						<li data-toggle="tooltip" data-placement="bottom" title="Return back to previous page." class="breadcrumb-item"><a href="../edit/">Edit Item</a></li>
 						<li class="breadcrumb-item active"><a href="javascript:void(0)">Advance Description</a></li>
 					</ol>

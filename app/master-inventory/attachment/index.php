@@ -6,8 +6,18 @@ spl_autoload_register(function($class){
     require_once '../../../php/classes/'.$class.'.php';
 });
 
+if(!(isset($_SESSION['sessionType']) == 1)){
+	redirect::to("../../../login/?status=nosession");
+}
+
+if(!(isset($_GET['item'])) || strlen($_GET['item']) < 6 ){
+	redirect::to("../edit/");
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 	
+	/*
 	$item_name = strtoupper(hyper_escape($_POST['itemName']));
 	$item_numb = hyper_escape($_POST['itemNumber']);
 	$mnftr     = strtoupper(hyper_escape($_POST['manufacturer']));
@@ -68,15 +78,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 		move_uploaded_file($_FILES["masterInventoryImage"]["tmp_name"], $target_dir.$newfilename);
 		redirect::to($_SERVER['PHP_SELF']."?status=0");
 	}
+	*/
 	
 }
 
-if(isset($_SESSION['sessionType']) == 1){
 
-	
-}else{
-	redirect::to("../../../login/?status=nosession");
-}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -85,7 +93,7 @@ if(isset($_SESSION['sessionType']) == 1){
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Inventory | Add New Item</title>
+    <title>Inventory | Add Attachment</title>
     <link rel="icon" type="image/png" sizes="16x16" href="#">
     <link rel="stylesheet" href="../../assets/plugins/pg-calendar/css/pignose.calendar.min.css" >
     <link rel="stylesheet" href="../../assets/plugins/chartist/css/chartist.min.css">
@@ -209,7 +217,8 @@ if(isset($_SESSION['sessionType']) == 1){
 					<div class="col p-md-0">
 						<ol class="breadcrumb">
 							<li class="breadcrumb-item"><a href="javascript:void(0)">Master Inventory</a></li>
-							<li class="breadcrumb-item active"><a href="javascript:void(0)">Add New Item</a></li>
+							<li class="breadcrumb-item"><a href="../edit/">Edit Item</a></li>
+							<li class="breadcrumb-item active"><a href="javascript:void(0)">Add Attachment</a></li>
 						</ol>
 					</div>
 				</div>
@@ -221,65 +230,10 @@ if(isset($_SESSION['sessionType']) == 1){
                                 <div class="form-validation">
 									<div id="masterErrMsg"></div>
                                     <form id="masterAddForm" action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST" enctype="multipart/form-data">
-                                        <div class="form-group row">
-                                            <label class="col-lg-4 col-form-label" for="categoryName">Item Name <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="col-lg-6">
-												
-                                                <input type="text" class="form-control upcase" name="itemName" id="itemName" placeholder="Enter Item Name" maxlength="90" />
-                                            </div>
-                                        </div>
+                                        
 										
 										<div class="form-group row">
-                                            <label class="col-lg-4 col-form-label" for="categoryName">Item # <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="col-lg-6">
-                                                <input type="text" onblur="checkItemNumberChange(event);" id="itemNum" class="form-control" name="itemNumber"  maxlength="6" />
-                                            </div>
-                                        </div>
-										
-										<div class="form-group row">
-                                            <label class="col-lg-4 col-form-label" for="categoryName">Manufacturer <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control upcase" id="manufacturer" name="manufacturer" placeholder="Manufacturer Name" maxlength="50" />
-                                            </div>
-                                        </div>
-										
-										<div class="form-group row">
-                                            <label class="col-lg-4 col-form-label" for="categoryName">Model <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control upcase" name="model" id="model" placeholder="Model" maxlength="50" />
-                                            </div>
-                                        </div>
-										
-										<div class="form-group row">
-                                            <label class="col-lg-4 col-form-label" for="categoryName">Year 
-                                            </label>
-                                            <div class="col-lg-6">
-                                                <input type="number" class="form-control upcase" name="year" id="year"  placeholder="Year" maxlength="4" />
-                                            </div>
-                                        </div>
-										
-										<div class="form-group row">
-                                            <label class="col-lg-4 col-form-label" for="categoryName">Brief Description <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="col-lg-6">
-                                                <textarea class="form-control upcase" id="description" name="description" rows="5" placeholder="Brief Description: 250 characters max"></textarea>
-                                            </div>
-                                        </div>
-										
-										<div class="form-group row">
-                                            <label class="col-lg-4 col-form-label" for="categoryName">Price <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="price" name="price" placeholder="Enter Price" maxlength="15" />
-                                            </div>
-                                        </div>
-										
-										<div class="form-group row">
-                                            <label class="col-lg-4 col-form-label" for="categoryName">Select Display Image <span class="text-danger">*</span>
+                                            <label class="col-lg-4 col-form-label" for="categoryName">Select Attachment <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="file" id="fileImage" class="form-control-file"  name="masterInventoryImage" />
@@ -304,9 +258,8 @@ if(isset($_SESSION['sessionType']) == 1){
 							<div class="card-body">
 								<h4 class="card-title">Quick Hints</h4>							
 								<ul id="hints">
-									<li><u>Item #</u> is auto-generated.</li>
-									<li>Only 1 image can be loaded on this page. Once the item has been created more images can be added on the advance edit page.</li>
-									<li>Download this default image template clicking <u><a href="../uploads/defaultImage.jpg" download>here</a></u>.</li>
+									<li>The only attachment allowed are <u>PDF</u> files.</li>
+									<li>Download a sample PDF file by clicking <a href="./dummy.pdf" download>here</a></li>
 								</ul>
 							</div>
 						</div>
@@ -352,13 +305,6 @@ if(isset($_SESSION['sessionType']) == 1){
 <script src="../../assets/plugins/chartist/js/chartist.min.js"></script>
 <script src="../../assets/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js"></script>
 <script>
-var item    = document.getElementById("itemNum");
-var mnfr    = document.getElementById("manufacturer");
-var modl 	= document.getElementById("model");
-var year    = document.getElementById("year");
-var desc 	= document.getElementById("description");
-var prce  	= document.getElementById("price");
-var itmName = document.getElementById("itemName");
 var file    = document.getElementById("fileImage"); 
 
 var frm = document.getElementById("masterAddForm");
@@ -368,94 +314,24 @@ var btn = document.getElementById("masterAddBtn");
 window.onload = function(){
 	var myParam = location.search.split('status=')[1];
 	if(myParam == "0"){
-		err.innerHTML = "<div class='alert alert-success'>Item has been created successfully.</div>";
+		err.innerHTML = "<div class='alert alert-success'>Attachment has been added successfully</div>";
 		setTimeout(function(){err.innerHTML="";},3000);
 	}else if(myParam == "1"){
-		err.innerHTML = "<div class='alert alert-warning'>Image size is greater than 4 mb.</div>";
+		err.innerHTML = "<div class='alert alert-warning'>Invalid extension. Please try different file.</div>";
 		setTimeout(function(){err.innerHTML="";},3000);
 	}
-	createItemNumber();
 }
 
 btn.addEventListener("click",function(e){
 	
-	if(itmName.value != ""){
-		
-		if(mnfr.value != ""){
-			
-			if(modl.value != ""){
-				
-				if(desc.value.length > 5){
-					
-					if(prce.value != "" && prce.value.length > 3){
-						if(file.value != ""){
-							frm.submit();
-						}else{
-							err.innerHTML = "<div class='alert alert-warning'>Please attach an image or add a default image.</div>";
-							setTimeout(function(){err.innerHTML="";},3000);
-						}
-					}else{
-						err.innerHTML = "<div class='alert alert-warning'>Please enter an aprox. price</div>";
-						setTimeout(function(){err.innerHTML="";},3000);
-					}
-					
-				}else{
-					err.innerHTML = "<div class='alert alert-warning'>Please enter a brief description.</div>";
-					setTimeout(function(){err.innerHTML="";},3000);
-				}
-				
-			}else{
-				err.innerHTML = "<div class='alert alert-warning'>Please enter a model name or #.</div>";
-				setTimeout(function(){err.innerHTML="";},3000);
-			}
-			
-		}else{
-			err.innerHTML = "<div class='alert alert-warning'>Please enter the manufacturer name.</div>";
-			setTimeout(function(){err.innerHTML="";},3000);
-		}
-		
+	if(file.value != ""){
+		//frm.submit();
 	}else{
-		err.innerHTML = "<div class='alert alert-warning'>Please enter the item name.</div>";
+		err.innerHTML = "<div class='alert alert-warning'>Please add an attachment to upload</div>";
 		setTimeout(function(){err.innerHTML="";},3000);
-	}
+	}				
 	
 });
-
-function checkItemNumberChange(e){
-	var i = e.target.value;
-	if(!(i.length < 6)){
-		createItemNumber(i);
-	}else{
-		err.innerHTML = "<div class='alert alert-warning'>Item # has to be 6 digits long.</div>";
-		setTimeout(function(){err.innerHTML="";e.target.focus();},2000);
-	}
-} 
-
-function createItemNumber(n){
-	var itemNum = n ? n: Math.floor(100000 + Math.random() * 900000);
-
-	var xhr = new XMLHttpRequest();
-	var url = '../../../php/json/master-inventory/check_duplicate_item_number.php?i=' + itemNum;
-	xhr.open('GET',url, true);
-	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-	xhr.onreadystatechange = function(){
-		if (xhr.readyState == 4 && xhr.status == 200) {
-			var s = JSON.parse(xhr.responseText);
-			if(s.status == 0){
-				item.value = itemNum;
-			}else if(s.status == 1){
-				createItemNumber();
-			}
-		}
-	};
-	xhr.send();
-}
-
-function st(event){
-  var str = event.target.value;
-  var i = str.replace(/[&\/\\,'"?<>!@#$%^&*()]/g, '');
-  event.target.value = i;
-}
 </script>
 </body>
 </html>

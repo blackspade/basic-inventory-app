@@ -1,43 +1,24 @@
 <?php
 require_once '../../../php/core/init.php';
 require_once '../../../php/functions/sanitize.php';
-require '../../../php/plugins/pagination/Paginator.php';
-
-use BCR\Paginator;
 
 spl_autoload_register(function($class){
     require_once '../../../php/classes/'.$class.'.php';
 });
 
 
-if(isset($_SESSION['sessionType']) == 1){
-
-}else{
+if(!(isset($_SESSION['sessionType']) == 1)){
 	redirect::to("../../../login/?status=nosession");
 }
 
-$first_connection = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
-$count_sql = "SELECT COUNT(*) FROM `master_inventory`";
-$count = mysqli_query($first_connection,$count_sql);
-$r = mysqli_fetch_array($count);
-
-$totalItems = $r[0];
-$itemsPerPage = 10;
-$currentPage = 0;
-
-if( isset($_GET['page']) ){
-	$currentPage = $_GET['page'];
-}else{
-	$currentPage = 1;
+if(!(isset($_GET['item'])) || strlen($_GET['item']) < 6 ){
+	redirect::to("../edit/");
 }
 
-$urlPattern = '?page=(:num)';
-$paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
-
-$limit = ($currentPage - 1) * $itemsPerPage.',' .$itemsPerPage;
+$item_num = hyper_escape($_GET['item']);
 
 $con = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
-$sql = "SELECT * FROM `master_inventory` WHERE `item_status` = 'NEW' ORDER BY `date_created` DESC LIMIT ".$limit;
+$sql = "SELECT * FROM `master_inventory` WHERE `item_number` = '{$item_num}'";
 $result = mysqli_query($con, $sql);
 
 ?>
@@ -47,7 +28,7 @@ $result = mysqli_query($con, $sql);
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Inventory | View New Item</title>
+    <title>Inventory | Item Edit</title>
     <link rel="icon" type="image/png" sizes="16x16" href="#">
     <link rel="stylesheet" href="../../assets/css/style.css" >
 	<style>
@@ -130,7 +111,7 @@ $result = mysqli_query($con, $sql);
 						<i class="icon-menu menu-icon"></i> <span class="nav-text">Master Inventory</span>
 					</a>
 					<ul aria-expanded="false">
-						<li><a href="./">View New Item</a></li>
+						<li><a href="../view">View New Item</a></li>
 						<li><a href="../add/">Add New Item</a></li>
 						<li><a href="../edit/">Edit Items</a></li>
 					</ul>
@@ -157,9 +138,9 @@ $result = mysqli_query($con, $sql);
 			<div class="row page-titles mx-0">
 				<div class="col p-md-0">
 					<ol class="breadcrumb">
-					    <li class="breadcrumb-item"><a href="javascript:void(0)">Master Inventory</a></li>
-						<li class="breadcrumb-item"><a href="javascript:void(0)">Active Item</a></li>
-						<li class="breadcrumb-item active"><a href="javascript:void(0)">View</a></li>
+					<li class="breadcrumb-item"><a href="javascript:void(0)">Master Inventory</a></li>
+						<li class="breadcrumb-item"><a href="../edit/">Active Item</a></li>
+						<li class="breadcrumb-item active"><a href="javascript:void(0)">Item Edit</a></li>
 					</ol>
 				</div>
 			</div>
@@ -184,7 +165,7 @@ $result = mysqli_query($con, $sql);
 											<th>Year</th>
 											<th>Price</th>
 											<th>Description</th>
-											<th>Actions</th>
+											
 										</tr>
 									</thead>
 									<tbody>
@@ -200,39 +181,15 @@ $result = mysqli_query($con, $sql);
 													 '<td ondblclick="uy(event,'.$row[0].');" >'.$row[11].'</td>'.
 													 '<td ondblclick="up(event,'.$row[0].');" >'.$row[8].'</td>'.
 													 '<td ondblclick="ud(event,'.$row[0].');">'.$row[12].'</td>'.
-													 '<td>'.switcher($row[0],$row[7],$row[1]).'</td>'.
+													 
 													 '</tr>';
 													
 											}
 											
-											function switcher($id,$cat,$i){
-												if(empty($cat)){
-													return '<button onclick="setCategory(event,'.$id.','.$i.')" type="button" class="btn mb-1 btn-warning">Select Category <span class="btn-icon-right"><i class="fa fa-archive"></i></span>
-                                    </button>';
-												}else{
-													return '<button onclick="createNewItem(event,'.$id.','.$i.')" type="button" class="btn mb-1 btn-primary">Create Item <span class="btn-icon-right"><i class="fa fa-check"></i></span>
-                                    </button>';
-												}
-											}
-											/*
-											function create_select_box($status,$id){
-												switch ($status) {
-													case "ACTIVE":
-														return "<select id='{$id}' onchange='us(event);' name='status' class='form-control-sm'><option value='ACTIVE' selected='selected'>Active</option><option value='DISABLED' >Disabled</option></select>";
-														break;
-													case "DISABLED":
-														return "<select id='{$id}' onchange='us(event);' name='status' class='form-control-sm'><option value='ACTIVE'>Active</option><option value='DISABLED' selected='selected'>Disabled</option></select>";
-														break;
-													case "DELETED":
-														return "<select id='{$id}' disabled='disabled' name='status' class='form-control-sm'><option value='ACTIVE'>Active</option><option value='DISABLED'>Disabled</option><option value='DELETED' selected='selected'>Deleted</option></select>";
-														break;
-												}		
-											}
-											*/
 									?>
 									</tbody>
 								</table>
-								<?php echo $paginator; ?>
+								
 							</div>
 						</div>
 					</div>
@@ -278,37 +235,6 @@ window.onload = function(){
 		err.innerHTML = "<div class='alert alert-success'>Item has been created successfully.</div>";
 		setTimeout(function(){err.innerHTML="";},3000);
 	}
-}
-
-
-function createNewItem(e,id,i){
-	
-	var item_id  = id;
-	var item_num = i;	
-	var item_num_page = e.target.parentNode.parentNode.children[2].textContent;
-	
-	if(parseInt(item_num_page) === item_num){
-		var xhr = new XMLHttpRequest();
-			var url = '../../../php/json/master-inventory/create_advance_item.php?id=' + item_id + "&itemNum=" + item_num;
-			xhr.open('GET',url, true);
-			xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-			xhr.onreadystatechange = function(){
-				if (xhr.readyState == 4 && xhr.status == 200) {
-					var s = JSON.parse(xhr.responseText);					
-					if(s.status == 1){
-						window.location.href= "./?status=0";
-					}else{
-						window.location.href= "./?status=1";
-					}
-				}
-			};
-			xhr.send();
-	}
-	
-}
-
-function setCategory(e,id,num){
-	window.location.href="./select-category/?id="+id + "&item=" + num;
 }
 
 function uin(e,id){

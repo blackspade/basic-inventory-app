@@ -155,8 +155,8 @@ $result = mysqli_query($con, $sql);
 			<div class="row page-titles mx-0">
 				<div class="col p-md-0">
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a href="javascript:void(0)">Active Item</a></li>
-						<li class="breadcrumb-item active"><a href="javascript:void(0)">Edit</a></li>
+						<li class="breadcrumb-item"><a href="javascript:void(0)">Master Inventory</a></li>
+						<li class="breadcrumb-item active"><a href="javascript:void(0)">Active Inventory</a></li>
 					</ol>
 				</div>
 			</div>
@@ -194,7 +194,8 @@ $result = mysqli_query($con, $sql);
 														<button data-item-num="'.$row[1].'" onclick="itemAction(event);" data-action="PREVIEW" class="btn btn-primary"  data-toggle="tooltip" data-placement="top" title="Preview Item"><span class="fa fa-eye" aria-hidden="true"></span></button>
 														<button data-item-num="'.$row[1].'" onclick="itemAction(event);" data-action="ADD" class="btn btn-info"  data-toggle="tooltip" data-placement="top" title="Add Advance Data"><i class="fa fa-plus-square" aria-hidden="true"></i></button>
 														<button data-item-num="'.$row[1].'" onclick="itemAction(event);" data-action="EDIT" class="btn btn-warning"  data-toggle="tooltip" data-placement="top" title="Edit Item"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-														<button data-item-num="'.$row[1].'" onclick="itemAction(event);" data-action="DELETE" class="btn btn-danger"  data-toggle="tooltip" data-placement="top" title="Deleted Item"><i class="fa fa-trash" aria-hidden="true"></i></button>
+														<button data-item-num="'.$row[1].'" onclick="itemAction(event);" data-action="ATTACHMENT" class="btn btn-default"  data-toggle="tooltip" data-placement="top" title="Add Attachment"><i class="fa fa-paperclip" aria-hidden="true"></i></button>
+														<button data-item-num="'.$row[1].'" data-action="DELETE" class="btn btn-danger"  data-toggle="tooltip" data-placement="top" title="Delete Item" onclick="deleteCat(\''.$row[1].'\');" ><i class="fa fa-trash" aria-hidden="true"></i></button>
 													 </td>'.
 													 '</tr>';
 													
@@ -265,6 +266,32 @@ window.onload = function(){
 	}
 }
 
+function deleteCat(i){
+	if(ust.value == "ADMIN"){
+		var r = confirm("Please confirm to delete this category.");
+		if(r == true){
+			var xhr = new XMLHttpRequest();
+			var url = '../../../php/json/master-inventory/delete_item.php?item=' + i;
+			xhr.open('GET',url, true);
+			xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+			xhr.onreadystatechange = function(){
+				if (xhr.readyState == 4 && xhr.status == 200) {
+					var s = JSON.parse(xhr.responseText);
+					if(s.status == 1){
+						err.innerHTML = '<div class="alert alert-success">Item #'+ i + ' has been deleted.</div>';
+						setTimeout(function(){location.reload();},1000);
+					}
+				}
+			};
+			xhr.send();
+		}
+	}else{
+		err.innerHTML = '<div class="alert alert-warning">Only an admin can delete a category.</div>';
+		setTimeout(function(){err.innerHTML="";},3000);
+	}
+}
+
+
 function itemAction(e){
 	var evt = e.target;
 	var e;
@@ -285,10 +312,10 @@ function itemAction(e){
 		window.location.href="../advance/?item=" + itemNum;
 		break;
 	  case "EDIT":
-		console.log(itemNum + "E");
+		window.location.href="../item-edit/?item=" + itemNum;
 		break;
-      case "DELETE":
-		console.log(itemNum + "D");
+      case "ATTACHMENT":
+		window.location.href="../attachment/?item=" + itemNum;
 		break; 		
 	  default:
 		console.log("CASE SWITCH FAILED!");
