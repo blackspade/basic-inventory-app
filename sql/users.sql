@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 31, 2019 at 12:01 AM
+-- Generation Time: Nov 07, 2019 at 05:08 PM
 -- Server version: 10.4.6-MariaDB
 -- PHP Version: 7.1.32
 
@@ -45,7 +45,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`uid`, `full_name`, `user_type`, `account_status`, `email`, `password`, `ip`, `last_updated`, `date_created`) VALUES
-(1, 'Bryant Ricart', 'ADMIN', 'ACTIVE', 'root.craig@yahoo.com', '$2y$12$vy4bot1MFnTiqW8ETG8cFuYFmrD9mWFyl/Mj4L3GxiC9TruNO7ffS', '::1', '0000-00-00 00:00:00', '2019-10-16 22:04:58'),
+(1, 'Bryant Ricart', 'ADMIN', 'ACTIVE', 'admin@inventory.com', '$2y$12$vy4bot1MFnTiqW8ETG8cFuYFmrD9mWFyl/Mj4L3GxiC9TruNO7ffS', '::1', '0000-00-00 00:00:00', '2019-10-16 22:04:58'),
 (2, 'Joe Davis', 'STANDARD', 'DISABLED', 'joe.davis@best.com', '$2y$12$66KHPkqmOtXOMU8Nsohyj.Ott5PYCgetMxBXm2.Z.L.s/nb7JyKVK', '::1', '0000-00-00 00:00:00', '2019-10-16 22:07:28'),
 (3, 'Jack Parker', 'STANDARD', 'PENDING', 'jackp@best.com', '$2y$12$oKQ5AcIN6rXAmZ8Mk4pRo.ieDUNkaStO/AKjJOKzvM1yRI.o8lbd2', '::1', '0000-00-00 00:00:00', '2019-10-17 12:25:37');
 
