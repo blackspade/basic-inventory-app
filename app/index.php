@@ -21,9 +21,6 @@ if(!(isset($_SESSION['sessionType']) == 1)){
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Inventory Dashboard</title>
     <link rel="icon" type="image/png" sizes="16x16" href="#">
-    <link href="./assets/plugins/pg-calendar/css/pignose.calendar.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./assets/plugins/chartist/css/chartist.min.css">
-    <link rel="stylesheet" href="./assets/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css">
     <link href="./assets/css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -68,7 +65,7 @@ if(!(isset($_SESSION['sessionType']) == 1)){
                                 <div class="dropdown-content-body">
                                     <ul>
                                         <li>
-                                            <a href="#"><i class="icon-user"></i> <span>Profile</span></a>
+                                            <a href="./profile/"><i class="icon-user"></i> <span>Profile</span></a>
                                         </li>
 										<li>
                                             <a href="#"><i class="fa fa-cog"></i> <span>Settings</span></a>
@@ -85,10 +82,6 @@ if(!(isset($_SESSION['sessionType']) == 1)){
             </div>
         </div>
 
-
-        <!--**********************************
-            Sidebar start
-        ***********************************-->
         <div class="nk-sidebar">           
             <div class="nk-nav-scroll">
                 <ul class="metismenu" id="menu">
@@ -206,17 +199,6 @@ if(!(isset($_SESSION['sessionType']) == 1)){
 <script src="./assets/js/custom.min.js"></script>
 <script src="./assets/js/settings.js"></script>
 <script src="./assets/js/gleek.js"></script>
-<script src="./assets/js/styleSwitcher.js"></script>
-<script src="./assets/plugins/chart.js/Chart.bundle.min.js"></script>
-<script src="./assets/plugins/circle-progress/circle-progress.min.js"></script>
-<script src="./assets/plugins/d3v3/index.js"></script>
-<script src="./assets/plugins/topojson/topojson.min.js"></script>
-<script src="./assets/plugins/raphael/raphael.min.js"></script>
-<script src="./assets/plugins/morris/morris.min.js"></script>
-<script src="./assets/plugins/moment/moment.min.js"></script>
-<script src="./assets/plugins/pg-calendar/js/pignose.calendar.min.js"></script>
-<script src="./assets/plugins/chartist/js/chartist.min.js"></script>
-<script src="./assets/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js"></script>
 <script src="./assets/js/dashboard/dashboard-1.js"></script>
 </body>
 </html>
