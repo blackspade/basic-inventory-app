@@ -205,9 +205,20 @@ $result = mysqli_query($con, $sql);
 								<li>Double click the <u>Item Name</u>, <u>Manufacturer</u>, <u>Model</u>, <u>Year</u>, <u>Price</u> and <u>Description</u> to update the text. Press the (ESC) key to cancel change and (ENTER) key to save.</li>
 							</ul>
 						</div>
-					</div>
-					
+					</div>	
 				</div>  
+				
+				<div class="col-lg-6">
+					<div class="card">
+						<div class="card-body">
+							<h4 class="card-title">Item Preview</h4>	
+							<div id="preivewLoad" class="table-responsive">
+							
+							</div>
+							
+						</div>
+					</div>
+				</div> 
 			</div>		
 			
 		</div>
@@ -230,11 +241,30 @@ var ust = document.getElementById("userType");
 var editTrigger = false;
 
 window.onload = function(){
-	var myParam = location.search.split('status=')[1];
-	if(myParam == "0"){
+	var stat = location.search.split('status=')[1];
+	var item = location.search.split('item=')[1];
+	if(stat == "0"){
 		err.innerHTML = "<div class='alert alert-success'>Item has been created successfully.</div>";
 		setTimeout(function(){err.innerHTML="";},3000);
 	}
+	
+	loadPreview(item);
+}
+
+function loadPreview(i){
+	var item = i;
+	var container = document.getElementById("preivewLoad");
+	var xhr = new XMLHttpRequest();
+	var url = '../../../php/json/master-inventory/load_preview.php?item=' + item;
+	xhr.open('GET',url, true);
+	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+	xhr.onreadystatechange = function(){
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			var s = JSON.parse(xhr.responseText);			
+			container.innerHTML = "<div id=\'preview\'><img src=\'../uploads/images/" + s.url + "\' width=\'250px\' /></div><table style=\'width:100%\' class=\'table\'><thead><tr><th>Item Name</th><th>Category</th><th>Price</th></tr></thead><tbody><tr><td>" + s.name + "</td><td>"+ s.category + "</td><td>" + s.price + "</td></tr></tbody></table><h4>Description</h4>" + s.description + "</p>";	
+		}
+	};
+	xhr.send();	
 }
 
 function uin(e,id){

@@ -10,81 +10,61 @@ if(!(isset($_SESSION['sessionType']) == 1)){
 	redirect::to("../../../login/?status=nosession");
 }
 
+
 if(!(isset($_GET['item'])) || strlen($_GET['item']) < 6 ){
 	redirect::to("../edit/");
 }
 
 
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 	
-	/*
-	$item_name = strtoupper(hyper_escape($_POST['itemName']));
-	$item_numb = hyper_escape($_POST['itemNumber']);
-	$mnftr     = strtoupper(hyper_escape($_POST['manufacturer']));
-	$model     = strtoupper(hyper_escape($_POST['model']));
-	$year      = hyper_escape($_POST['year']);
-	$desc      = strtoupper(hyper_escape($_POST['description']));
-	$price     = hyper_escape($_POST['price']);
-	
-	$user_type = hyper_escape($_SESSION['sessionType']);
 	$user = hyper_escape($_SESSION['sessionType']."|".$_SESSION['sessionId']."|".$_SESSION['name']);
-	$status = "NEW";
 	
-	$target_dir = "../uploads/images/";
-	$target_file = $target_dir.basename($_FILES["masterInventoryImage"]["name"]);
-	$check = getimagesize($_FILES["masterInventoryImage"]["tmp_name"]);
-	$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-	$uploadOk = 1;
+	$item_num = hyper_escape($_POST['itemNum']);
 	
-	if($check == false) {
-        //redirect::to($_SERVER['PHP_SELF']."?status=1");
-    } 
+	$target_dir = "./uploads/files/";
+	$target_file = $target_dir.basename($_FILES["attachmentFile"]["name"]);
+	$pdfFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 	
-	if ($_FILES["masterInventoryImage"]["size"] > 5000000) {
-		redirect::to($_SERVER['PHP_SELF']."?status=2");
+	if($pdfFileType != "pdf"){
+		redirect::to($_SERVER['PHP_SELF']."?item=".$item_num."&status=1");
 	}
 	
-	if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"){
-		redirect::to($_SERVER['PHP_SELF']."?status=3");
-	}
 	
-	$temp = explode(".",$_FILES["masterInventoryImage"]["name"]);
+	$temp = explode(".",$_FILES["attachmentFile"]["name"]);
 	$newfilename = round(microtime(true)) . '.' . end($temp);
 	
 	$arr = [];
 	$i = array($newfilename);
-	$arr["images"]= $i;
-	
-	$json_images = json_encode($arr);
+	$arr["pdf"]= $i;
+	$json_pdf = json_encode($arr);
 	
 	$con = new mysqli(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
 	
-	$sql = "INSERT INTO `master_inventory`(`item_number`, `item_name`,  `item_status`, `item_image_dir`, `item_price`, `manufacturer`, `model`, `year`, `description`, `created_by`) VALUES (?,?,?,?,?,?,?,?,?,?)";
+	$sql = "UPDATE `master_inventory_advance` SET `data_json`= ?, `last_edit_by`= ? WHERE `item_number` = ?";
+	
+	$error = [];
 	
 	if (!($stmt = $con->prepare($sql))) {
 		//TEST PURPOSES ONLY
-		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+		$error["msg"] = "PREPARE FAILED";
 	}
 
-	if (!$stmt->bind_param("isssssssss",$item_numb,$item_name,$status,$json_images,$price,$mnftr,$model,$year,$desc,$user)){
+	if (!$stmt->bind_param("ssi",$json_pdf,$user, $item_num)){
 		//TEST PURPOSES ONLY
-		echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+		$error["msg"] = "BIND FAILED";
 	}
 	
 	if (!$stmt->execute()) {
 		//TEST PURPOSES ONLY
-		echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+		$error["msg"] = "STATEMENT FAILED";
 	}else{
-		move_uploaded_file($_FILES["masterInventoryImage"]["tmp_name"], $target_dir.$newfilename);
-		redirect::to($_SERVER['PHP_SELF']."?status=0");
+		move_uploaded_file($_FILES["attachmentFile"]["tmp_name"], $target_dir.$newfilename);
+		redirect::to($_SERVER['PHP_SELF']."?item=".$item_num."&status=0");
 	}
-	*/
 	
 }
-
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,9 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Inventory | Add Attachment</title>
     <link rel="icon" type="image/png" sizes="16x16" href="#">
-    <link rel="stylesheet" href="../../assets/plugins/pg-calendar/css/pignose.calendar.min.css" >
-    <link rel="stylesheet" href="../../assets/plugins/chartist/css/chartist.min.css">
-    <link rel="stylesheet" href="../../assets/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css">
     <link rel="stylesheet" href="../../assets/css/style.css" >
 	<style>
 		#hints li{
@@ -108,6 +85,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 		}
 		.upcase{
 			text-transform: uppercase;
+		}
+		#currentAttachment{
+			color:grey;
+			font-size:1.2em;
 		}
 	</style>
 </head>
@@ -171,10 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             </div>
         </div>
 
-
-        <!--**********************************
-            Sidebar start
-        ***********************************-->
         <div class="nk-sidebar">           
             <div class="nk-nav-scroll">
                 <ul class="metismenu" id="menu">            				
@@ -203,13 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 </ul>
             </div>
         </div>
-        <!--**********************************
-            Sidebar end
-        ***********************************-->
 
-        <!--**********************************
-            Content body start
-        ***********************************-->
         <div class="content-body">
 
             <div class="container-fluid mt-3">
@@ -228,24 +199,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                         <div class="card">
                             <div class="card-body">
                                 <div class="form-validation">
-									<div id="masterErrMsg"></div>
-                                    <form id="masterAddForm" action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST" enctype="multipart/form-data">
+									<div id="attachErrMsg"></div>
+                                    <form id="attachForm" action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST" enctype="multipart/form-data">
                                         
 										
 										<div class="form-group row">
-                                            <label class="col-lg-4 col-form-label" for="categoryName">Select Attachment <span class="text-danger">*</span>
+                                            <label class="col-lg-4 col-form-label" for="attachmentFile">Select Attachment <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-6">
-                                                <input type="file" id="fileImage" class="form-control-file"  name="masterInventoryImage" />
+                                                <input type="file" id="attachFile" class="form-control-file"  name="attachmentFile" />
+												<input type="hidden" value="<?php echo hyper_escape($_GET['item']); ?>" name="itemNum" />
                                             </div>
                                         </div>
                                         
                                         <div class="form-group row">
                                             <div class="col-lg-8 ml-auto">
-                                                <button type="button" id="masterAddBtn" class="btn btn-primary">Submit</button>
+                                                <button type="button" id="attchBtn" class="btn btn-primary">Submit</button>
                                             </div>
                                         </div>
                                     </form>
+									
+									<div>
+										<span id="currentAttachment" ><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Attachment: <span id="filePull">None</span> </span>
+									</div>
                                 </div>
                             </div>
                         </div>
@@ -253,85 +229,113 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 </div>
 				
 				<div class="row">
-					<div class="col-lg-6 col-md-12">
+					<div class="col-lg-6">
 						<div class="card">
 							<div class="card-body">
 								<h4 class="card-title">Quick Hints</h4>							
 								<ul id="hints">
-									<li>The only attachment allowed are <u>PDF</u> files.</li>
+									<li>The only attachment allowed are <a href="./dummy.pdf" download><u>PDF</u></a> files.</li>
 									<li>Download a sample PDF file by clicking <a href="./dummy.pdf" download>here</a></li>
 								</ul>
 							</div>
 						</div>
 						
-					</div>  
+					</div> 
+
+					<div class="col-lg-6">
+						<div class="card">
+							<div class="card-body">
+								<h4 class="card-title">Item Preview</h4>	
+								<div id="preivewLoad" class="table-responsive">
+								
+								</div>
+								
+							</div>
+						</div>
+						
+					</div> 					
 				</div>	
 				
 				
             </div>
         </div>
-		
-        <!--**********************************
-            Content body end
-        ***********************************-->
-        
-        
-        <!--**********************************
-            Footer start
-        ***********************************-->
+
         <div class="footer">
             <div class="copyright">
                 <p>Copyright &copy; Designed & Developed by <a href="#">BCR Web Developers LLC.</a> 2019</p>
             </div>
         </div>
-        <!--**********************************
-            Footer end
-        ***********************************-->
     </div>
-
 <script src="../../assets/plugins/common/common.min.js"></script>
 <script src="../../assets/js/custom.min.js"></script>
 <script src="../../assets/js/settings.js"></script>
 <script src="../../assets/js/gleek.js"></script>
-<script src="../../assets/js/styleSwitcher.js"></script>
-<script src="../../assets/plugins/chart.js/Chart.bundle.min.js"></script>
-<script src="../../assets/plugins/circle-progress/circle-progress.min.js"></script>
-<script src="../../assets/plugins/d3v3/index.js"></script>
-<script src="../../assets/plugins/topojson/topojson.min.js"></script>
-<script src="../../assets/plugins/raphael/raphael.min.js"></script>
-<script src="../../assets/plugins/morris/morris.min.js"></script>
-<script src="../../assets/plugins/moment/moment.min.js"></script>
-<script src="../../assets/plugins/pg-calendar/js/pignose.calendar.min.js"></script>
-<script src="../../assets/plugins/chartist/js/chartist.min.js"></script>
-<script src="../../assets/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js"></script>
 <script>
-var file    = document.getElementById("fileImage"); 
+var file    = document.getElementById("attachFile"); 
 
-var frm = document.getElementById("masterAddForm");
-var err = document.getElementById("masterErrMsg");
-var btn = document.getElementById("masterAddBtn");
+var frm = document.getElementById("attachForm");
+var err = document.getElementById("attachErrMsg");
+var btn = document.getElementById("attchBtn");
 
 window.onload = function(){
-	var myParam = location.search.split('status=')[1];
-	if(myParam == "0"){
+	var stat = location.search.split('status=')[1];
+	var item = location.search.split('item=')[1];
+	if(stat == "0"){
 		err.innerHTML = "<div class='alert alert-success'>Attachment has been added successfully</div>";
 		setTimeout(function(){err.innerHTML="";},3000);
-	}else if(myParam == "1"){
+	}else if(stat == "1"){
 		err.innerHTML = "<div class='alert alert-warning'>Invalid extension. Please try different file.</div>";
 		setTimeout(function(){err.innerHTML="";},3000);
 	}
+	loadPreview(item);
+	loadFile(item);
 }
 
 btn.addEventListener("click",function(e){
 	
 	if(file.value != ""){
-		//frm.submit();
+		frm.submit();
 	}else{
 		err.innerHTML = "<div class='alert alert-warning'>Please add an attachment to upload</div>";
 		setTimeout(function(){err.innerHTML="";},3000);
 	}				
 	
 });
+function loadFile(i){
+	var item = i;
+	var box = document.getElementById("filePull");
+	var xhr = new XMLHttpRequest();
+	var url = '../../../php/json/master-inventory/load_file.php?item=' + item;
+	xhr.open('GET',url, true);
+	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+	xhr.onreadystatechange = function(){
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			var s = JSON.parse(xhr.responseText);		
+			if(s.url != null){
+				box.innerHTML = "<a href='./uploads/files/"+ s.url + "' target='_blank' >View "+ s.url +"</a>";
+			}
+		}
+	};
+	xhr.send();
+}
+
+
+function loadPreview(i){
+	var item = i;
+	var container = document.getElementById("preivewLoad");
+	var xhr = new XMLHttpRequest();
+	var url = '../../../php/json/master-inventory/load_preview.php?item=' + item;
+	xhr.open('GET',url, true);
+	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+	xhr.onreadystatechange = function(){
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			var s = JSON.parse(xhr.responseText);			
+			container.innerHTML = "<div id=\'preview\'><img src=\'../uploads/images/" + s.url + "\' width=\'250px\' /></div><table style=\'width:100%\' class=\'table\'><thead><tr><th>Item Name</th><th>Category</th><th>Price</th></tr></thead><tbody><tr><td>" + s.name + "</td><td>"+ s.category + "</td><td>" + s.price + "</td></tr></tbody></table><h4>Description</h4>" + s.description + "</p>";	
+		}
+	};
+	xhr.send();	
+}
+
 </script>
 </body>
 </html>
