@@ -98,7 +98,7 @@ $img_url = $img->images[0];
 							<div class="dropdown-content-body">
 								<ul>
 									<li>
-										<a href="#"><i class="icon-user"></i> <span>Profile</span></a>
+										<a href="../../preview/"><i class="icon-user"></i> <span>Profile</span></a>
 									</li>
 									<li>
 										<a href="#"><i class="fa fa-cog"></i> <span>Settings</span></a>

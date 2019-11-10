@@ -89,6 +89,16 @@ if(!(isset($_SESSION['sessionType']) == 1)){
                     <li class="nav-label">Actions</li>
 					<li>
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-menu menu-icon"></i> <span class="nav-text">Company</span>
+                        </a>
+                        <ul aria-expanded="false">
+						    <li><a href="./company/profile/">Profile</a></li>
+                            <li><a href="#">Settings</a></li>
+                        </ul>
+                    </li>
+					
+					<li>
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                             <i class="icon-menu menu-icon"></i> <span class="nav-text">Master Inventory</span>
                         </a>
                         <ul aria-expanded="false">
@@ -104,6 +114,33 @@ if(!(isset($_SESSION['sessionType']) == 1)){
                         <ul aria-expanded="false">
                             <li><a href="./category/add/">Add Category</a></li>
                             <li><a href="./category/edit/">Edit Category</a></li>
+                        </ul>
+                    </li>
+					<li>
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-menu menu-icon"></i> <span class="nav-text">Featured Items</span>
+                        </a>
+                        <ul aria-expanded="false">
+						    <li><a href="#">Homepage</a></li>
+                        </ul>
+                    </li>
+					<li>
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-menu menu-icon"></i> <span class="nav-text">User Management</span>
+                        </a>
+                        <ul aria-expanded="false">
+						    <li><a href="#">Active Users</a></li>
+                            <li><a href="#">Customers</a></li>
+                        </ul>
+                    </li>
+					<li>
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-menu menu-icon"></i> <span class="nav-text">SEO</span>
+                        </a>
+                        <ul aria-expanded="false">
+						    <li><a href="#">Add Keywords</a></li>
+                            <li><a href="#">Create HTML</a></li>
+							<li><a href="#">Directory</a></li>
                         </ul>
                     </li>
                     

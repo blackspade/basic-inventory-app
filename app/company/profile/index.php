@@ -1,9 +1,6 @@
 <?php
 require_once '../../../php/core/init.php';
 require_once '../../../php/functions/sanitize.php';
-require '../../../php/plugins/pagination/Paginator.php';
-
-use BCR\Paginator;
 
 spl_autoload_register(function($class){
     require_once '../../../php/classes/'.$class.'.php';
@@ -14,28 +11,8 @@ if(!(isset($_SESSION['sessionType']) == 1)){
 	redirect::to("../../../login/?status=nosession");
 }
 
-$first_connection = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
-$count_sql = "SELECT COUNT(*) FROM `categories`";
-$count = mysqli_query($first_connection,$count_sql);
-$r = mysqli_fetch_array($count);
-
-$totalItems = $r[0];
-$itemsPerPage = 5;
-$currentPage = 0;
-
-if( isset($_GET['page']) ){
-	$currentPage = $_GET['page'];
-}else{
-	$currentPage = 1;
-}
-
-$urlPattern = '?page=(:num)';
-$paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
-
-$limit = ($currentPage - 1) * $itemsPerPage.',' .$itemsPerPage;
-
 $con = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
-$sql = "SELECT * FROM `categories` ORDER BY `date_created` DESC LIMIT ".$limit;
+$sql = "SELECT * FROM `company_profile` WHERE `id` = 1";
 $result = mysqli_query($con, $sql);
 
 ?>
@@ -45,7 +22,7 @@ $result = mysqli_query($con, $sql);
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Inventory | Edit Categories</title>
+    <title>Inventory | Company Profile</title>
     <link rel="icon" type="image/png" sizes="16x16" href="#">
     <link rel="stylesheet" href="../../assets/css/style.css" >
 	<style>
@@ -124,6 +101,15 @@ $result = mysqli_query($con, $sql);
 			<ul class="metismenu" id="menu">			
 				<li class="nav-label">Actions</li>
 				<li>
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-menu menu-icon"></i> <span class="nav-text">Company</span>
+                        </a>
+                        <ul aria-expanded="false">
+						    <li><a href="./">Profile</a></li>
+							<li><a href="#">Settings</a></li>
+                        </ul>
+                    </li>
+				<li>
 					<a class="has-arrow" href="javascript:void()" aria-expanded="false">
 						<i class="icon-menu menu-icon"></i> <span class="nav-text">Master Inventory</span>
 					</a>
@@ -139,7 +125,7 @@ $result = mysqli_query($con, $sql);
 					</a>
 					<ul aria-expanded="false">
 						<li><a href="../add/">Add Category</a></li>
-						<li><a href="./">Edit Category</a></li>
+						<li><a href="../edit">Edit Category</a></li>
 					</ul>
 				</li>
 				
@@ -154,8 +140,8 @@ $result = mysqli_query($con, $sql);
 			<div class="row page-titles mx-0">
 				<div class="col p-md-0">
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a href="javascript:void(0)">Categories</a></li>
-						<li class="breadcrumb-item active"><a href="javascript:void(0)">Edit</a></li>
+						<li class="breadcrumb-item"><a href="javascript:void(0)">Company</a></li>
+						<li class="breadcrumb-item active"><a href="javascript:void(0)">Profile</a></li>
 					</ol>
 				</div>
 			</div>
@@ -165,51 +151,42 @@ $result = mysqli_query($con, $sql);
 					<div class="card">
 						<div class="card-body">
 							<div class="card-title">
-								<h4>Category Table</h4>
+								<h4>Company Profile</h4>
 							</div>
 							<div class="table-responsive">
-								<div id="catEditErrMsg"></div>
+								<div id="profileErrMsg"></div>
 								<table class="table">
 									<thead>
 										<tr>
-											<th>#</th>
-											<th>Category Name</th>
-											<th>Status</th>
-											<th>Click Count</th>
-											<th>Actions</th>
+											<th>Company Name</th>
+											<th>Address 1</th>
+											<th>Address 2</th>
+											<th>City</th>
+											<th>Zip</th>
+											<th>Email</th>
+											<th>Phone #</th>
+											<th>Fax #</th>
 										</tr>
 									</thead>
 									<tbody>
 									<?php 	
 											while ($row = mysqli_fetch_row($result)){
 												echo '<tr>'.
-													 '<td>'.$row[0].'</td>'.
-													 '<td ondblclick="ucn(event,'.$row[0].');" >'.$row[1].'</td>'.		 
-													 '<td>'.create_select_box($row[2],$row[0]).'</td>'.
-													 '<td>'.$row[3].'</td>'.
-													 '<td><button class="btn btn-danger" type="button" onclick="deleteCat('.$row[0].',\''.$row[2].'\');"><i class="fa fa-trash" aria-hidden="true"></i></button></td>'.
+													 '<td data-id="'.$row[0].'" data-header="company_name" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[1].'</td>'.
+													 '<td data-id="'.$row[0].'" data-header="address" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[2].'</td>'.		 
+													 '<td data-id="'.$row[0].'" data-header="add_address" ondblclick="updateProfile(event,'.$row[0].');"  >'.$row[3].'</td>'.
+													 '<td data-id="'.$row[0].'" data-header="city" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[4].'</td>'.
+													 '<td data-id="'.$row[0].'" data-header="zip" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[5].'</td>'.
+													 '<td data-id="'.$row[0].'" data-header="email" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[7].'</td>'.
+													 '<td data-id="'.$row[0].'" data-header="phone" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[6].'</td>'.
+													 '<td data-id="'.$row[0].'" data-header="fax" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[8].'</td>'.
 													 '</tr>';
 											}
 											
-											
-											
-											function create_select_box($status,$id){
-												switch ($status) {
-													case "ACTIVE":
-														return "<select id='{$id}' onchange='us(event);' name='status' class='form-control-sm'><option value='ACTIVE' selected='selected'>Active</option><option value='DISABLED' >Disabled</option></select>";
-														break;
-													case "DISABLED":
-														return "<select id='{$id}' onchange='us(event);' name='status' class='form-control-sm'><option value='ACTIVE'>Active</option><option value='DISABLED' selected='selected'>Disabled</option></select>";
-														break;
-													case "DELETED":
-														return "<select id='{$id}' disabled='disabled' name='status' class='form-control-sm'><option value='ACTIVE'>Active</option><option value='DISABLED'>Disabled</option><option value='DELETED' selected='selected'>Deleted</option></select>";
-														break;
-												}		
-											}
+									
 									?>
 									</tbody>
-								</table>
-								<?php echo $paginator; ?>
+								</table>	
 							</div>
 						</div>
 					</div>
@@ -222,10 +199,7 @@ $result = mysqli_query($con, $sql);
 						<div class="card-body">
 							<h4 class="card-title">Quick Hints</h4>							
 							<ul id="hints">
-								<li>Double click the <u>Category Name</u> to update the text. Press the (ESC) key to cancel change and (ENTER) key to save.</li>
-								<li>Only an admin can delete a category.</li>
-								<li>The column <u>Click Count</u> keeps track of how many times the category has been clicked on the front-end.</li>
-								<li>WARNING: If the item have already been assigned a category please find the item and reassign the category.</li>
+								<li>Double click any field to update the text. Press the (ESC) key to cancel change and (ENTER) key to save.</li>
 							</ul>
 						</div>
 					</div>
@@ -248,40 +222,103 @@ $result = mysqli_query($con, $sql);
 <script src="../../assets/js/settings.js"></script>
 <script src="../../assets/js/gleek.js"></script>
 <script>
-var err = document.getElementById("catEditErrMsg");
+var err = document.getElementById("profileErrMsg");
 var ust = document.getElementById("userType");
 
 var editTrigger = false;
 
-function ucns(e){
+function updateProfile(e,id){
+	var ee = e.target;
+	var id = ee.attributes[0].nodeValue;
+	var header = ee.attributes[1].nodeValue;
+	var currentValue = ee.innerText;
+	
+	if(editTrigger != true){
+
+		editTrigger = true;
+
+		var inp = document.createElement("input");
+			inp.type = "text";
+			inp.value = currentValue;
+			inp.setAttribute("class", "form-control upcase");
+			inp.setAttribute("data-id",id);
+			inp.setAttribute("data-header",header);
+			inp.setAttribute("data-now",currentValue);
+			inp.setAttribute("onkeyup", "profileSave(event);");
+			
+			switch(header) {
+			  case "company_name":
+				inp.setAttribute("maxlength",35);
+				break;
+			  case "address":
+				inp.setAttribute("maxlength",30);
+				break;
+			  case "add_address":
+				inp.setAttribute("maxlength",30);
+				break;
+			  case "city":
+				inp.setAttribute("maxlength",30);
+				break;
+			 case "zip":
+				inp.setAttribute("maxlength",8);
+				break;	
+			 case "email":
+				inp.setAttribute("maxlength",90);
+				break;	
+			 case "phone":
+				inp.setAttribute("maxlength",15);
+				break;	
+			 case "fax":
+				inp.setAttribute("maxlength",15);
+				break;
+			} 
+			
+			ee.innerHTML = "";
+			ee.innerText = "";
+			ee.appendChild(inp);
+		
+
+	}else{
+		e.preventDefault();
+	}
+	
+	
+}
+
+function profileSave(e){
+
 	if(e.keyCode === 13){
 		var i = e.target;
-		var id = i.attributes[3].nodeValue;
-		var nv = i.value.toUpperCase();
+		var head = i.attributes[3].nodeValue
+		var newValue = encodeURI(i.value.toUpperCase());
 		var p = i.parentNode;
 		
-		if(i.attributes[2].nodeValue != nv){
+		if(i.attributes[4].nodeValue != newValue){
+			
 			var xhr = new XMLHttpRequest();
-			var url = '../../../php/json/category/update_category_name.php?id=' + id + "&c=" + nv;
+			var url = '../../../php/json/company/update_profile.php?update=' + newValue + '&head=' + head;
 			xhr.open('GET',url, true);
 			xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
 			xhr.onreadystatechange = function(){
 				if (xhr.readyState == 4 && xhr.status == 200) {
 					var s = JSON.parse(xhr.responseText);
+					
 					if(s.status == 1){
-						err.innerHTML = '<div class="alert alert-success">Category #'+ id + ' has been updated.</div>';
+						err.innerHTML = '<div class="alert alert-success">Profile has been updated successfully.</div>';
 						setTimeout(function(){err.innerHTML="";},3000);
-						p.innerHTML = nv;
+						p.innerHTML = decodeURI(newValue);
 					}else if(s.status == 2){
 						err.innerHTML = '<div class="alert alert-warning">Your account does not have permission to make the change.</div>';
 						setTimeout(function(){err.innerHTML="";},3000);
 					}
+					
 				}
 			};
 			xhr.send();
+			
 			editTrigger = false;
 		}else{
-			p.innerHTML = i.attributes[2].nodeValue.toUpperCase();
+			p.innerHTML = i.attributes[4].nodeValue.toUpperCase();
 			editTrigger = false;
 		}
 
@@ -290,77 +327,10 @@ function ucns(e){
 	}else if(e.keyCode === 27){
 		var i = e.target;
 		var p = i.parentNode;
-			p.innerHTML = i.attributes[2].nodeValue.toUpperCase();
+			p.innerHTML = i.attributes[4].nodeValue.toUpperCase();
 			editTrigger = false;
 	}
-}
 
-function ucn(e,id){
-	var t = e.target;
-	var cn = e.target.innerText;
-	
-	if(editTrigger != true){
-	
-		editTrigger = true;
-	
-		var inp = document.createElement("input");
-			inp.type = "text";
-			inp.value = cn;
-			inp.setAttribute("class", "form-control upcase");
-			inp.setAttribute("cat-pre",cn);
-			inp.setAttribute("id",id);
-			inp.setAttribute("onkeyup", "ucns(event);");
-			t.innerHTML = "";
-			t.innerText = "";
-		
-		t.appendChild(inp);
-	}else{
-		e.preventDefault();
-	}
-}
-
-function deleteCat(i,s){
-	if(s != "DELETED" && ust.value == "ADMIN"){
-		var r = confirm("Please confirm to delete this category.");
-		if(r == true){
-			var xhr = new XMLHttpRequest();
-			var url = '../../../php/json/category/delete_category.php?id=' + i + "&s=" + s;
-			xhr.open('GET',url, true);
-			xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-			xhr.onreadystatechange = function(){
-				if (xhr.readyState == 4 && xhr.status == 200) {
-					var s = JSON.parse(xhr.responseText);
-					if(s.status == 1){
-						err.innerHTML = '<div class="alert alert-success">Item #'+ i + ' has been deleted.</div>';
-						setTimeout(function(){location.reload();},1000);
-					}
-				}
-			};
-			xhr.send();
-		}
-	}else{
-		err.innerHTML = '<div class="alert alert-warning">Only an admin can delete a category.</div>';
-		setTimeout(function(){err.innerHTML="";},3000);
-	}
-}
-
-function us(e){
-	var i = e.target.id;
-	var s = e.target.value;
-	var xhr = new XMLHttpRequest();
-	var url = '../../../php/json/category/update_status.php?id=' + i + "&s=" + s;
-	xhr.open('GET',url, true);
-	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-	xhr.onreadystatechange = function(){
-		if (xhr.readyState == 4 && xhr.status == 200) {
-			var s = JSON.parse(xhr.responseText);
-			if(s.status == 1){
-				err.innerHTML = '<div class="alert alert-success">Item #'+ i + ' has been updated.</div>';
-				setTimeout(function(){err.innerHTML="";},3000);
-			}
-		}
-	};
-	xhr.send();
 }
 </script>
 </body>

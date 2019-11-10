@@ -109,7 +109,7 @@ if(isset($_SESSION['sessionType']) == 1){
                                 <div class="dropdown-content-body">
                                     <ul>
                                         <li>
-                                            <a href="#"><i class="icon-user"></i> <span>Profile</span></a>
+                                            <a href="../../profile/"><i class="icon-user"></i> <span>Profile</span></a>
                                         </li>
 										<li>
                                             <a href="#"><i class="fa fa-cog"></i> <span>Settings</span></a>
