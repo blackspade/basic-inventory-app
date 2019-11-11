@@ -93,7 +93,7 @@ if(!(isset($_SESSION['sessionType']) == 1)){
                         </a>
                         <ul aria-expanded="false">
 						    <li><a href="./company/profile/">Profile</a></li>
-                            <li><a href="#">Settings</a></li>
+                            <li><a href="./company/settings/">Settings</a></li>
                         </ul>
                     </li>
 					
@@ -147,13 +147,7 @@ if(!(isset($_SESSION['sessionType']) == 1)){
                 </ul>
             </div>
         </div>
-        <!--**********************************
-            Sidebar end
-        ***********************************-->
 
-        <!--**********************************
-            Content body start
-        ***********************************-->
         <div class="content-body">
 
             <div class="container-fluid mt-3">
@@ -203,7 +197,7 @@ if(!(isset($_SESSION['sessionType']) == 1)){
 
                                     </div>
                                     <div class="mt-4">
-
+										
                                     </div>
                                 </div>
                             </div>         
@@ -214,22 +208,12 @@ if(!(isset($_SESSION['sessionType']) == 1)){
             </div>
         </div>
 		
-        <!--**********************************
-            Content body end
-        ***********************************-->
-        
-        
-        <!--**********************************
-            Footer start
-        ***********************************-->
         <div class="footer">
             <div class="copyright">
                 <p>Copyright &copy; Designed & Developed by <a href="#">BCR Web Developers LLC.</a> 2019</p>
             </div>
         </div>
-        <!--**********************************
-            Footer end
-        ***********************************-->
+
     </div>
 
 <script src="./assets/plugins/common/common.min.js"></script>

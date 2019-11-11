@@ -50,17 +50,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 			
 			if(password_verify($pass,$arr["pass"])  && $arr['status'] == "ACTIVE"){
 				
+				$conNew = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
+				$sqlNew = "SELECT `results_per_page` FROM `company_settings` WHERE `id` = 1";
+				$result = mysqli_query($conNew, $sqlNew);
+				$count = mysqli_fetch_array($result);
+				
 				if($arr["usertype"] == 'ADMIN'){
 					$_SESSION['sessionType'] = $arr["usertype"];
 					$_SESSION['sessionId'] = $arr["uid"];
 					$_SESSION['email'] = $arr["email"];
 					$_SESSION['name'] = $arr["name"];
+					$_SESSION['resultCount'] = $count['results_per_page'];
 					redirect::to("../app/");
 				}else if($arr["usertype"] == 'STANDARD'){
 					$_SESSION['SessionType'] = $arr["usertype"];
 					$_SESSION['SessionId'] = $arr["uid"];
 					$_SESSION['email'] = $arr["email"];
 					$_SESSION['name'] = $arr["name"];
+					$_SESSION['resultCount'] = $count;
 					redirect::to("../app/");
 				}
 				

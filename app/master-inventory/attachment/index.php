@@ -157,6 +157,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 <ul class="metismenu" id="menu">            				
                     <li class="nav-label">Actions</li>
 					<li>
+						<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+							<i class="icon-menu menu-icon"></i> <span class="nav-text">Company</span>
+						</a>
+						<ul aria-expanded="false">
+							<li><a href="../../company/profile/">Profile</a></li>
+							<li><a href="../../company/settings/">Settings</a></li>
+						</ul>
+					</li>
+					<li>
                         <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                             <i class="icon-menu menu-icon"></i> <span class="nav-text">Master Inventory</span>
                         </a>

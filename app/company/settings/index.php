@@ -12,7 +12,7 @@ if(!(isset($_SESSION['sessionType']) == 1)){
 }
 
 $con = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
-$sql = "SELECT * FROM `company_profile` WHERE `id` = 1";
+$sql = "SELECT * FROM `company_settings` WHERE `id` = 1";
 $result = mysqli_query($con, $sql);
 
 ?>
@@ -22,7 +22,7 @@ $result = mysqli_query($con, $sql);
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Inventory | Company Profile</title>
+    <title>Inventory | Company Settings</title>
     <link rel="icon" type="image/png" sizes="16x16" href="#">
     <link rel="stylesheet" href="../../assets/css/style.css" >
 	<style>
@@ -105,8 +105,8 @@ $result = mysqli_query($con, $sql);
                             <i class="icon-menu menu-icon"></i> <span class="nav-text">Company</span>
                         </a>
                         <ul aria-expanded="false">
-						    <li><a href="./">Profile</a></li>
-							<li><a href="../settings/">Settings</a></li>
+						    <li><a href="../profile/">Profile</a></li>
+							<li><a href="./">Settings</a></li>
                         </ul>
                     </li>
 				<li>
@@ -141,7 +141,7 @@ $result = mysqli_query($con, $sql);
 				<div class="col p-md-0">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item"><a href="javascript:void(0)">Company</a></li>
-						<li class="breadcrumb-item active"><a href="javascript:void(0)">Profile</a></li>
+						<li class="breadcrumb-item active"><a href="javascript:void(0)">Settings</a></li>
 					</ol>
 				</div>
 			</div>
@@ -158,31 +158,24 @@ $result = mysqli_query($con, $sql);
 								<table class="table">
 									<thead>
 										<tr>
-											<th>Company Name</th>
-											<th>Address 1</th>
-											<th>Address 2</th>
-											<th>City</th>
-											<th>Zip</th>
-											<th>Email</th>
-											<th>Phone #</th>
-											<th>Fax #</th>
+											<th>Support Email</th>
+											<th>Home Page Count</th>
+											<th>Catalog Page Count</th>
+											<th>Results Per Page</th>
+											<th>Date Created</th>
 										</tr>
 									</thead>
 									<tbody>
 									<?php 	
 											while ($row = mysqli_fetch_row($result)){
 												echo '<tr>'.
-													 '<td data-id="'.$row[0].'" data-header="company_name" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[1].'</td>'.
-													 '<td data-id="'.$row[0].'" data-header="address" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[2].'</td>'.		 
-													 '<td data-id="'.$row[0].'" data-header="add_address" ondblclick="updateProfile(event,'.$row[0].');"  >'.$row[3].'</td>'.
-													 '<td data-id="'.$row[0].'" data-header="city" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[4].'</td>'.
-													 '<td data-id="'.$row[0].'" data-header="zip" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[5].'</td>'.
-													 '<td data-id="'.$row[0].'" data-header="email" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[7].'</td>'.
-													 '<td data-id="'.$row[0].'" data-header="phone" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[6].'</td>'.
-													 '<td data-id="'.$row[0].'" data-header="fax" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[8].'</td>'.
-													 '</tr>';
-											}
-											
+													 '<td><a href="mailto:'.$row[1].'">'.$row[1].'</a></td>'.
+													 '<td>'.$row[2].'</td>'.		 
+													 '<td>'.$row[3].'</td>'.
+													 '<td data-id="'.$row[0].'" data-header="results_per_page" ondblclick="updateSettings(event,'.$row[0].');" >'.$row[4].'</td>'.
+													 '<td>'.date("M-d-Y", strtotime($row[5])).'</td>'.
+													'</tr>';
+											}											
 									
 									?>
 									</tbody>
@@ -199,7 +192,7 @@ $result = mysqli_query($con, $sql);
 						<div class="card-body">
 							<h4 class="card-title">Quick Hints</h4>							
 							<ul id="hints">
-								<li>Double click any field to update the text. Press the (ESC) key to cancel change and (ENTER) key to save.</li>
+								<li>Double click <u>Results Per Page</u> to update the value. Press the (ESC) key to cancel change and (ENTER) key to save.</li>
 							</ul>
 						</div>
 					</div>
@@ -227,12 +220,12 @@ var ust = document.getElementById("userType");
 
 var editTrigger = false;
 
-function updateProfile(e,id){
+function updateSettings(e,id){
 	var ee = e.target;
 	var id = ee.attributes[0].nodeValue;
 	var header = ee.attributes[1].nodeValue;
 	var currentValue = ee.innerText;
-	
+		
 	if(editTrigger != true){
 
 		editTrigger = true;
@@ -244,35 +237,8 @@ function updateProfile(e,id){
 			inp.setAttribute("data-id",id);
 			inp.setAttribute("data-header",header);
 			inp.setAttribute("data-now",currentValue);
-			inp.setAttribute("onkeyup", "profileSave(event);");
-			
-			switch(header) {
-			  case "company_name":
-				inp.setAttribute("maxlength",35);
-				break;
-			  case "address":
-				inp.setAttribute("maxlength",30);
-				break;
-			  case "add_address":
-				inp.setAttribute("maxlength",30);
-				break;
-			  case "city":
-				inp.setAttribute("maxlength",30);
-				break;
-			 case "zip":
-				inp.setAttribute("maxlength",8);
-				break;	
-			 case "email":
-				inp.setAttribute("maxlength",90);
-				break;	
-			 case "phone":
-				inp.setAttribute("maxlength",15);
-				break;	
-			 case "fax":
-				inp.setAttribute("maxlength",15);
-				break;
-			} 
-			
+			inp.setAttribute("onkeyup", "settingsSave(event);");
+						
 			ee.innerHTML = "";
 			ee.innerText = "";
 			ee.appendChild(inp);
@@ -285,18 +251,18 @@ function updateProfile(e,id){
 	
 }
 
-function profileSave(e){
-
+function settingsSave(e){
+	
 	if(e.keyCode === 13){
 		var i = e.target;
-		var head = i.attributes[3].nodeValue
+		var head = i.attributes[1].nodeValue
 		var newValue = encodeURI(i.value.toUpperCase());
 		var p = i.parentNode;
-		
+
 		if(i.attributes[4].nodeValue != newValue){
 			
 			var xhr = new XMLHttpRequest();
-			var url = '../../../php/json/company/update_profile.php?update=' + newValue + '&head=' + head;
+			var url = '../../../php/json/company/update_settings.php?value='+ newValue;
 			xhr.open('GET',url, true);
 			xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
 			xhr.onreadystatechange = function(){
@@ -309,6 +275,9 @@ function profileSave(e){
 						p.innerHTML = decodeURI(newValue);
 					}else if(s.status == 2){
 						err.innerHTML = '<div class="alert alert-warning">Your account does not have permission to make the change.</div>';
+						setTimeout(function(){err.innerHTML="";},3000);
+					}else if(s.status == 3){
+						err.innerHTML = '<div class="alert alert-warning">'+ s.error +'</div>';
 						setTimeout(function(){err.innerHTML="";},3000);
 					}
 					
@@ -330,7 +299,6 @@ function profileSave(e){
 			p.innerHTML = i.attributes[4].nodeValue.toUpperCase();
 			editTrigger = false;
 	}
-
 }
 </script>
 </body>

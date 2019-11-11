@@ -20,7 +20,7 @@ $count = mysqli_query($first_connection,$count_sql);
 $r = mysqli_fetch_array($count);
 
 $totalItems = $r[0];
-$itemsPerPage = 10;
+$itemsPerPage = intval($_SESSION['resultCount']);
 $currentPage = 0;
 
 if( isset($_GET['page']) ){
@@ -123,6 +123,15 @@ $result = mysqli_query($con, $sql);
 		<div class="nk-nav-scroll">
 			<ul class="metismenu" id="menu">
 				<li class="nav-label">Actions</li>
+				<li>
+					<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+						<i class="icon-menu menu-icon"></i> <span class="nav-text">Company</span>
+					</a>
+					<ul aria-expanded="false">
+						<li><a href="../../company/profile/">Profile</a></li>
+						<li><a href="../../company/settings/">Settings</a></li>
+					</ul>
+				</li>
 				<li>
 					<a class="has-arrow" href="javascript:void()" aria-expanded="false">
 						<i class="icon-menu menu-icon"></i> <span class="nav-text">Master Inventory</span>
