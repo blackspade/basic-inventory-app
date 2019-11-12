@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 	$pdfFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 	
 	if($pdfFileType != "pdf"){
-		redirect::to($_SERVER['PHP_SELF']."?item=".$item_num."&status=1");
+		redirect::to("./?item=".$item_num."&status=1");
 	}
 	
 	
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$error["msg"] = "STATEMENT FAILED";
 	}else{
 		move_uploaded_file($_FILES["attachmentFile"]["tmp_name"], $target_dir.$newfilename);
-		redirect::to($_SERVER['PHP_SELF']."?item=".$item_num."&status=0");
+		redirect::to("./?item=".$item_num."&status=0");
 	}
 	
 }
@@ -209,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                             <div class="card-body">
                                 <div class="form-validation">
 									<div id="attachErrMsg"></div>
-                                    <form id="attachForm" action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST" enctype="multipart/form-data">
+                                    <form id="attachForm" action="<?php echo $_SERVER['PHP_SELF']."?item=".$_GET['item'];?>" method="POST" enctype="multipart/form-data">
                                         
 										
 										<div class="form-group row">

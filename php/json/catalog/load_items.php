@@ -6,7 +6,7 @@ spl_autoload_register(function($class){
     require_once '../../classes/'.$class.'.php';
 });
 
-if(is_ajax_request() && isset($_SESSION['sessionType']) == 1){
+if(is_ajax_request()){
 	
 	$category = strtoupper(hyper_escape($_GET['category']));
 	$con = new mysqli(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
