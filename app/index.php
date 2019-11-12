@@ -37,7 +37,7 @@ if(!(isset($_SESSION['sessionType']) == 1)){
 
         <div class="nav-header">
             <div class="brand-logo">
-                <a href="#">
+                <a href="./">
                     <b class="logo-abbr"><img src="./assets/images/logo.png" alt=""> </b>
                     <span class="logo-compact"><img src="./assets/images/logo-compact.png" alt=""></span>
                     <span class="brand-title">
