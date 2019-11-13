@@ -8,7 +8,7 @@ $GLOBALS['config'] = array(
     'mysql' => array(
         'host' => 'localhost',
         'user' => 'root',
-        'pass' => '',
+        'pass' => 'mysql',
         'db' => 'application'
      )
 );

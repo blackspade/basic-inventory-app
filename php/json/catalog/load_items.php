@@ -33,7 +33,7 @@ if(is_ajax_request()){
 	}else{
 		
 		$stmt->bind_result($id, $item_number,$name,$clicks,$status,$image,$video,$cat, $price, $man, $model, $year,$desc,$created,$last,$date);
-		echo "<table class='table'><thead><tr> <th></th> <th>Item #</th> <th>Item Name</th> <th>Image</th> <th>Item Price</th> <th>Manufacturer</th> <th>Model</th> <th>Year</th> <th>Action</th> </tr></thead><tbody>";
+		echo "<table class='table'><thead><tr> <th></th> <th>Item #</th> <th>Item Name</th> <th>Image</th> <th>Price</th> <th>Manufacturer</th> <th>Model</th> <th>Year</th> <th>Action</th> </tr></thead><tbody>";
 		
 		
 		
