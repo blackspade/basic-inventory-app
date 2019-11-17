@@ -12,7 +12,7 @@ if(!(isset($_SESSION['sessionType']) == 1)){
 }
 
 $con = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
-$sql = "SELECT * FROM `company_settings` WHERE `id` = 1";
+$sql = "SELECT * FROM `homepage_featured` WHERE  `id` = 1";
 $result = mysqli_query($con, $sql);
 
 ?>
@@ -22,7 +22,7 @@ $result = mysqli_query($con, $sql);
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Inventory | Company Settings</title>
+    <title>Inventory | Homepage Featured</title>
     <link rel="icon" type="image/png" sizes="16x16" href="#">
     <link rel="stylesheet" href="../../assets/css/style.css" >
 	<style>
@@ -106,7 +106,7 @@ $result = mysqli_query($con, $sql);
                         </a>
                         <ul aria-expanded="false">
 						    <li><a href="../profile/">Profile</a></li>
-							<li><a href="./">Settings</a></li>
+							<li><a href="../settings/">Settings</a></li>
                         </ul>
                     </li>
 				<li>
@@ -129,6 +129,15 @@ $result = mysqli_query($con, $sql);
 					</ul>
 				</li>
 				
+				<li>
+					<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+						<i class="icon-menu menu-icon"></i> <span class="nav-text">Featured Items</span>
+					</a>
+					<ul aria-expanded="false">
+						<li><a href="./">Homepage</a></li>
+					</ul>
+				</li>
+				
 			</ul>
 		</div>
 	</div>
@@ -140,46 +149,59 @@ $result = mysqli_query($con, $sql);
 			<div class="row page-titles mx-0">
 				<div class="col p-md-0">
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a href="javascript:void(0)">Company</a></li>
-						<li class="breadcrumb-item active"><a href="javascript:void(0)">Settings</a></li>
+						<li class="breadcrumb-item"><a href="javascript:void(0)">Homepage</a></li>
+						<li class="breadcrumb-item active"><a href="javascript:void(0)">Featured Items</a></li>
 					</ol>
 				</div>
 			</div>
 			
 			 <div class="row">
-				<div class="col-lg-12">
+				<div class="col-lg-4">
 					<div class="card">
 						<div class="card-body">
 							<div class="card-title">
-								<h4>Company Profile</h4>
+								<h4>Featured Items</h4>
 							</div>
 							<div class="table-responsive">
 								<div id="profileErrMsg"></div>
-								<table class="table">
-									<thead>
-										<tr>
-											<th>Support Email</th>
-											<th>Home Page Count</th>
-											<th>Catalog Page Count</th>
-											<th>Results Per Page</th>
-											<th>Date Created</th>
-										</tr>
-									</thead>
-									<tbody>
+
 									<?php 	
 											while ($row = mysqli_fetch_row($result)){
-												echo '<tr>'.
-													 '<td><a href="mailto:'.$row[1].'">'.$row[1].'</a></td>'.
-													 '<td>'.$row[2].'</td>'.		 
-													 '<td>'.$row[3].'</td>'.
-													 '<td data-id="'.$row[0].'" data-header="results_per_page" ondblclick="updateSettings(event,'.$row[0].');" >'.$row[4].'</td>'.
-													 '<td>'.date("M-d-Y", strtotime($row[5])).'</td>'.
-													'</tr>';
+												echo	'<div class="input-group mb-3">'.
+														'<div class="input-group-prepend">'.
+														'<span class="input-group-text" id="basic-addon3">Featured Item</span>'.
+														'</div>'.
+														'<input type="text" data-header="item_one" class="form-control" value="'.$row[1].'">'.
+														'</div>';
+												echo	'<div class="input-group mb-3">'.
+														'<div class="input-group-prepend">'.
+														'<span class="input-group-text" id="basic-addon3">Featured Item</span>'.
+														'</div>'.
+														'<input type="text" data-header="item_two" class="form-control" value="'.$row[2].'">'.
+														'</div>';	
+												echo	'<div class="input-group mb-3">'.
+														'<div class="input-group-prepend">'.
+														'<span class="input-group-text" id="basic-addon3">Featured Item</span>'.
+														'</div>'.
+														'<input type="text" data-header="item_three" class="form-control" value="'.$row[3].'">'.
+														'</div>';	
+												
+												$json = json_decode($row[4]);
+												
+												switch($json->status){
+													case 'disabled':
+														echo '<select class="form-control"> <option value="enabled">Enabled</option> <option value="disabled" selected>Disabled</option> </select>';
+													break;
+													case 'enabled':
+														echo '<select class="form-control"> <option value="enabled" selected>Enabled</option> <option value="disabled">Disabled</option> </select>';
+													break;
+												};
+												
+												echo '<br /><button class="btn btn-primary">Save</button>';
+												
 											}											
-									
 									?>
-									</tbody>
-								</table>	
+									
 							</div>
 						</div>
 					</div>
@@ -192,7 +214,8 @@ $result = mysqli_query($con, $sql);
 						<div class="card-body">
 							<h4 class="card-title">Quick Hints</h4>							
 							<ul id="hints">
-								<li>Double click <u>Results Per Page</u> to update the value. Press the (ESC) key to cancel change and (ENTER) key to save.</li>
+								<li>Only valid item numbers that are not disabled can be saved.</li>
+								<li>Items will appear on homepage.</li>
 							</ul>
 						</div>
 					</div>

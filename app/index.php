@@ -121,7 +121,7 @@ if(!(isset($_SESSION['sessionType']) == 1)){
                             <i class="icon-menu menu-icon"></i> <span class="nav-text">Featured Items</span>
                         </a>
                         <ul aria-expanded="false">
-						    <li><a href="#">Homepage</a></li>
+						    <li><a href="./homepage/featured/">Homepage</a></li>
                         </ul>
                     </li>
 					<li>

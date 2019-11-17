@@ -164,6 +164,14 @@ if(isset($_SESSION['sessionType']) == 1){
                             <li><a href="../edit/">Edit Category</a></li>
                         </ul>
                     </li>
+					<li>
+                        <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            <i class="icon-menu menu-icon"></i> <span class="nav-text">Featured Items</span>
+                        </a>
+                        <ul aria-expanded="false">
+						    <li><a href="../../homepage/featured/">Homepage</a></li>
+                        </ul>
+                    </li>
                     
                 </ul>
             </div>

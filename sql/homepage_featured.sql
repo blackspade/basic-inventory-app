@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 13, 2019 at 12:12 AM
+-- Generation Time: Nov 17, 2019 at 12:55 AM
 -- Server version: 5.6.37
 -- PHP Version: 7.1.8
 
@@ -32,7 +32,14 @@ CREATE TABLE IF NOT EXISTS `homepage_featured` (
   `item_two` int(11) NOT NULL,
   `item_three` int(11) NOT NULL,
   `data_json` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `homepage_featured`
+--
+
+INSERT INTO `homepage_featured` (`id`, `item_one`, `item_two`, `item_three`, `data_json`) VALUES
+(1, 0, 0, 0, '{"status":"disabled"}');
 
 --
 -- Indexes for dumped tables
@@ -52,7 +59,7 @@ ALTER TABLE `homepage_featured`
 -- AUTO_INCREMENT for table `homepage_featured`
 --
 ALTER TABLE `homepage_featured`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
