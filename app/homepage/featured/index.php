@@ -1,6 +1,9 @@
 <?php
 require_once '../../../php/core/init.php';
 require_once '../../../php/functions/sanitize.php';
+require '../../../php/plugins/pagination/Paginator.php';
+
+use BCR\Paginator;
 
 spl_autoload_register(function($class){
     require_once '../../../php/classes/'.$class.'.php';
@@ -10,6 +13,31 @@ spl_autoload_register(function($class){
 if(!(isset($_SESSION['sessionType']) == 1)){
 	redirect::to("../../../login/?status=nosession");
 }
+
+$first_connection = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
+$count_sql = "SELECT COUNT(*) FROM `master_inventory`";
+$count = mysqli_query($first_connection,$count_sql);
+$r = mysqli_fetch_array($count);
+
+$totalItems = $r[0];
+$itemsPerPage = 5;
+$currentPage = 0;
+
+if( isset($_GET['page']) ){
+	$currentPage = $_GET['page'];
+}else{
+	$currentPage = 1;
+}
+
+$urlPattern = '?page=(:num)';
+$paginator = new Paginator($totalItems, $itemsPerPage, $currentPage, $urlPattern);
+
+$limit = ($currentPage - 1) * $itemsPerPage.',' .$itemsPerPage;
+
+$con_item = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
+$sql_item = "SELECT * FROM `master_inventory` WHERE `item_status` = 'ACTIVE' ORDER BY `date_created` DESC LIMIT ".$limit;
+$result_item = mysqli_query($con_item, $sql_item);
+
 
 $con = mysqli_connect(config::get('mysql|host'), config::get('mysql|user'), config::get('mysql|pass'), config::get('mysql|db'), 3306);
 $sql = "SELECT * FROM `homepage_featured` WHERE  `id` = 1";
@@ -156,14 +184,67 @@ $result = mysqli_query($con, $sql);
 			</div>
 			
 			 <div class="row">
+					
+				
+				<div class="col-lg-8">
+					<div class="card">
+						<div class="card-body">
+							<div class="card-title">
+								<h4>Active Item List</h4>
+							</div>
+							<div class="table-responsive">
+							<table class="table">
+									<thead>
+										<tr>
+											
+											<th>Item Name</th>
+											<th>Item #</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+									<?php 	
+											while ($row = mysqli_fetch_row($result_item)){
+												
+												echo '<tr>'.													 
+													 '<td>'.$row[2].'</td>'.		 
+													 '<td>'.$row[1].'</td>'.										
+													 '<td>
+														<button data-item-num="'.$row[1].'" onclick="itemAction(event);" data-action="PREVIEW" class="btn btn-primary"  data-toggle="tooltip" data-placement="top" title="Preview Item"><span class="fa fa-eye" aria-hidden="true"></span></button>
+													 </td>'.
+													 '</tr>';
+													
+											}
+											
+
+									?>
+									</tbody>
+								</table>
+								<?php echo $paginator; ?>
+							</div>
+							
+							<div>
+								<div class="card-body">
+									<h4 class="card-title">Quick Hints</h4>							
+									<ul id="hints">
+										<li>Only valid item numbers that are not disabled can be saved.</li>
+										<li>Items will appear on homepage.</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>	
+				</div>
+				
 				<div class="col-lg-4">
 					<div class="card">
 						<div class="card-body">
 							<div class="card-title">
 								<h4>Featured Items</h4>
 							</div>
+							<div id="featuredErrMsg"></div>
 							<div class="table-responsive">
-								<div id="profileErrMsg"></div>
+								
 
 									<?php 	
 											while ($row = mysqli_fetch_row($result)){
@@ -171,57 +252,62 @@ $result = mysqli_query($con, $sql);
 														'<div class="input-group-prepend">'.
 														'<span class="input-group-text" id="basic-addon3">Featured Item</span>'.
 														'</div>'.
-														'<input type="text" data-header="item_one" class="form-control" value="'.$row[1].'">'.
+														'<input type="text" data-header="item_one" onblur="checkItem(event);" id="one" class="form-control" value="'.$row[1].'">'.
 														'</div>';
 												echo	'<div class="input-group mb-3">'.
 														'<div class="input-group-prepend">'.
 														'<span class="input-group-text" id="basic-addon3">Featured Item</span>'.
 														'</div>'.
-														'<input type="text" data-header="item_two" class="form-control" value="'.$row[2].'">'.
+														'<input type="text" data-header="item_two" onblur="checkItem(event);"  id="two" class="form-control" value="'.$row[2].'">'.
 														'</div>';	
 												echo	'<div class="input-group mb-3">'.
 														'<div class="input-group-prepend">'.
 														'<span class="input-group-text" id="basic-addon3">Featured Item</span>'.
 														'</div>'.
-														'<input type="text" data-header="item_three" class="form-control" value="'.$row[3].'">'.
+														'<input type="text" data-header="item_three" onblur="checkItem(event);" id="three" class="form-control" value="'.$row[3].'">'.
 														'</div>';	
 												
 												$json = json_decode($row[4]);
 												
 												switch($json->status){
 													case 'disabled':
-														echo '<select class="form-control"> <option value="enabled">Enabled</option> <option value="disabled" selected>Disabled</option> </select>';
+														echo '<select id="status" class="form-control"> <option value="enabled">Enabled</option> <option value="disabled" selected>Disabled</option> </select>';
 													break;
 													case 'enabled':
-														echo '<select class="form-control"> <option value="enabled" selected>Enabled</option> <option value="disabled">Disabled</option> </select>';
+														echo '<select id="status" class="form-control"> <option value="enabled" selected>Enabled</option> <option value="disabled">Disabled</option> </select>';
 													break;
 												};
 												
-												echo '<br /><button class="btn btn-primary">Save</button>';
+												echo '<br /><button onclick="saveBtn(event);" class="btn btn-primary">Save</button>';
 												
 											}											
 									?>
 									
 							</div>
+							
+				
+							
+						</div>
+						<hr />
+							
+							
+						<div>
+							<div class="card-body">
+								<div class="card-title">
+									<h4>Item Preview</h4>
+								</div>
+								<div id="itemPreviewLoad" class="table-responsive">
+								
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>	
+				</div>
+				
+				
+				
 			</div>
 			
-			<div class="row">
-				<div class="col-lg-6 col-md-12">
-					<div class="card">
-						<div class="card-body">
-							<h4 class="card-title">Quick Hints</h4>							
-							<ul id="hints">
-								<li>Only valid item numbers that are not disabled can be saved.</li>
-								<li>Items will appear on homepage.</li>
-							</ul>
-						</div>
-					</div>
-					
-				</div>  
-			</div>		
 			
 		</div>
 	</div>
@@ -238,91 +324,78 @@ $result = mysqli_query($con, $sql);
 <script src="../../assets/js/settings.js"></script>
 <script src="../../assets/js/gleek.js"></script>
 <script>
-var err = document.getElementById("profileErrMsg");
+var err = document.getElementById("featuredErrMsg");
 var ust = document.getElementById("userType");
+var ipl = document.getElementById("itemPreviewLoad");
 
-var editTrigger = false;
-
-function updateSettings(e,id){
-	var ee = e.target;
-	var id = ee.attributes[0].nodeValue;
-	var header = ee.attributes[1].nodeValue;
-	var currentValue = ee.innerText;
+function saveBtn(e){
+	var o = document.getElementById("one");
+	var t = document.getElementById("two");
+	var r = document.getElementById("three");
+	var s = document.getElementById("status");
+	
+	if(o.value != "" && !(o.length < 6)){
 		
-	if(editTrigger != true){
-
-		editTrigger = true;
-
-		var inp = document.createElement("input");
-			inp.type = "text";
-			inp.value = currentValue;
-			inp.setAttribute("class", "form-control upcase");
-			inp.setAttribute("data-id",id);
-			inp.setAttribute("data-header",header);
-			inp.setAttribute("data-now",currentValue);
-			inp.setAttribute("onkeyup", "settingsSave(event);");
-						
-			ee.innerHTML = "";
-			ee.innerText = "";
-			ee.appendChild(inp);
-		
-
 	}else{
-		e.preventDefault();
+		err.innerHTML = '<div class="alert alert-info">Item # is invalid!</div>';
+		setTimeout(function(){err.innerHTML = "";},3000);
 	}
-	
-	
 }
 
-function settingsSave(e){
-	
-	if(e.keyCode === 13){
-		var i = e.target;
-		var head = i.attributes[1].nodeValue
-		var newValue = encodeURI(i.value.toUpperCase());
-		var p = i.parentNode;
 
-		if(i.attributes[4].nodeValue != newValue){
-			
-			var xhr = new XMLHttpRequest();
-			var url = '../../../php/json/company/update_settings.php?value='+ newValue;
-			xhr.open('GET',url, true);
-			xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-			xhr.onreadystatechange = function(){
-				if (xhr.readyState == 4 && xhr.status == 200) {
-					var s = JSON.parse(xhr.responseText);
-					
-					if(s.status == 1){
-						err.innerHTML = '<div class="alert alert-success">Profile has been updated successfully.</div>';
-						setTimeout(function(){err.innerHTML="";},3000);
-						p.innerHTML = decodeURI(newValue);
-					}else if(s.status == 2){
-						err.innerHTML = '<div class="alert alert-warning">Your account does not have permission to make the change.</div>';
-						setTimeout(function(){err.innerHTML="";},3000);
-					}else if(s.status == 3){
-						err.innerHTML = '<div class="alert alert-warning">'+ s.error +'</div>';
-						setTimeout(function(){err.innerHTML="";},3000);
-					}
-					
-				}
-			};
-			xhr.send();
-			
-			editTrigger = false;
-		}else{
-			p.innerHTML = i.attributes[4].nodeValue.toUpperCase();
-			editTrigger = false;
+function checkItem(e){
+	var i   = e.target;
+	var a = i.attributes[1].nodeValue;
+	var itemNum = i.value;
+	if(!(itemNum.length < 6)){
+	
+		var xhr = new XMLHttpRequest();
+		var url = '../../../php/json/featured/check_item_status.php?item=' + itemNum;
+		xhr.open('GET',url, true);
+		xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+		xhr.onreadystatechange = function(){
+			if (xhr.readyState == 4 && xhr.status == 200) {
+				var s = JSON.parse(xhr.responseText);
+				if(s.status == 'null'){
+					err.innerHTML = '<div class="alert alert-info">Item # does not exist</div>';
+					setTimeout(function(){err.innerHTML = "";},3000);
+					i.value = "";
+				}	
+			}
+		};
+		xhr.send();
+	}else{
+		err.innerHTML = '<div class="alert alert-warning">Please check Item #</div>';
+		setTimeout(function(){err.innerHTML = "";},3000);
+	}
+}
+
+function itemAction(e){
+	var evt = e.target;
+	var e;
+	if(evt.localName != "button"){
+		e = evt.parentNode;		
+	}else{
+		e = evt;
+	}
+	var itemNum = e.attributes[0].nodeValue;
+	var action = e.attributes[2].nodeValue;
+	
+	
+	var xhr = new XMLHttpRequest();
+	var url = '../../../php/json/featured/load_featured_preview.php?item=' + itemNum;
+	xhr.open('GET',url, true);
+	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+	xhr.onreadystatechange = function(){
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			var s = xhr.responseText;
+			ipl.innerHTML = s;
 		}
-
-		
-		
-	}else if(e.keyCode === 27){
-		var i = e.target;
-		var p = i.parentNode;
-			p.innerHTML = i.attributes[4].nodeValue.toUpperCase();
-			editTrigger = false;
-	}
+	};
+	xhr.send();	
+	
 }
+
 </script>
 </body>
 </html>
