@@ -253,14 +253,14 @@ $result = mysqli_query($con, $sql);
 														'<span class="input-group-text" id="basic-addon3">Featured Item</span>'.
 														'</div>'.
 														'<input type="text" data-header="item_one" onblur="checkItem(event);" id="one" class="form-control" value="'.$row[1].'">'.
-														'</div>';
-												echo	'<div class="input-group mb-3">'.
+														'</div>'.
+												    	'<div class="input-group mb-3">'.
 														'<div class="input-group-prepend">'.
 														'<span class="input-group-text" id="basic-addon3">Featured Item</span>'.
 														'</div>'.
 														'<input type="text" data-header="item_two" onblur="checkItem(event);"  id="two" class="form-control" value="'.$row[2].'">'.
-														'</div>';	
-												echo	'<div class="input-group mb-3">'.
+														'</div>'.
+												    	'<div class="input-group mb-3">'.
 														'<div class="input-group-prepend">'.
 														'<span class="input-group-text" id="basic-addon3">Featured Item</span>'.
 														'</div>'.
@@ -334,14 +334,40 @@ function saveBtn(e){
 	var r = document.getElementById("three");
 	var s = document.getElementById("status");
 	
-	if(o.value != "" && !(o.length < 6)){
-		
+	if(o.value != "" && !(o.value.length < 6)){
+		if(t.value != "" && !(t.value.length < 6)){
+			if(r.value != "" && !(r.value.length < 6)){
+				save(o.value,t.value,r.value,s.value);
+			}else{
+				err.innerHTML = '<div class="alert alert-info">Item # is invalid!</div>';
+				setTimeout(function(){err.innerHTML = "";},3000);
+			}
+		}else{
+			err.innerHTML = '<div class="alert alert-info">Item # is invalid!</div>';
+			setTimeout(function(){err.innerHTML = "";},3000);
+		}
 	}else{
 		err.innerHTML = '<div class="alert alert-info">Item # is invalid!</div>';
 		setTimeout(function(){err.innerHTML = "";},3000);
 	}
 }
 
+function save(o,t,r,s){
+	var xhr = new XMLHttpRequest();
+	var url = '../../../php/json/featured/update_featured.php?one=' + o + "&two=" + t + "&three=" + r + "&status=" + s;
+	xhr.open('GET',url, true);
+	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+	xhr.onreadystatechange = function(){
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			var s = JSON.parse(xhr.responseText);
+			if(s.status == 0){
+				err.innerHTML = '<div class="alert alert-success">Saved successfully.</div>';
+				setTimeout(function(){err.innerHTML = "";},3000);
+			}	
+		}
+	};
+	xhr.send();	
+}
 
 function checkItem(e){
 	var i   = e.target;

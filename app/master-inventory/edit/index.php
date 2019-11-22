@@ -193,7 +193,7 @@ $result = mysqli_query($con, $sql);
 											
 											<th>Item Name</th>
 											<th>Item #</th>
-											<th># of Clicks</th>
+											<th>Views</th>
 											<th>Current Status</th>
 											<th>Actions</th>
 										</tr>

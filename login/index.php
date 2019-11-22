@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 		  <a class="nav-link" href="../create-account/">Create Account</a>
 		</li>
 		<li class="nav-item active">
-		  <a class="nav-link disabled" href="./">Login</a>
+		  <a class="nav-link" href="./">Login</a>
 		</li>
 	  </ul>
 	</div>

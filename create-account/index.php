@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 		  <a class="nav-link" href="./">Create Account</a>
 		</li>
 		<li class="nav-item">
-		  <a class="nav-link disabled" href="../login/">Login</a>
+		  <a class="nav-link" href="../login/">Login</a>
 		</li>
 	  </ul>
 	</div>

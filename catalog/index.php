@@ -58,7 +58,7 @@ $result = mysqli_query($con, $sql);
 		  <a class="nav-link" href="../create-account/">Create Account</a>
 		</li>
 		<li class="nav-item">
-		  <a class="nav-link disabled" href="../login/">Login</a>
+		  <a class="nav-link" href="../login/">Login</a>
 		</li>
 	  </ul>
 	</div>
@@ -181,19 +181,6 @@ function logCountCat(i){
 	xhr.send();	
 }
 
-function logCountItem(i){
-	var xhr = new XMLHttpRequest();
-	var url = '../php/json/catalog/update_count_item.php?item=' + i;
-	xhr.open('GET',url, true);
-	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-	xhr.onreadystatechange = function(){
-		if (xhr.readyState == 4 && xhr.status == 200) {
-			var s = JSON.parse(xhr.responseText);
-		}
-	};
-	xhr.send();	
-}
-
 function setSearchType(e){
 	var s = document.getElementById("search");
 	var i = e.target;
@@ -221,7 +208,7 @@ function setSearchType(e){
 function loadQuote(e){
 	var i = e.target;
 	var itemNum = i.attributes[1].nodeValue;
-	logCountItem(itemNum);
+	location.href = "./quote-view/?item=" + itemNum;
 }
 
 /*

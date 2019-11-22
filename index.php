@@ -14,7 +14,6 @@ spl_autoload_register(function($class){
     <meta name="description" content="">
 	<meta name="keywords" content="">
 	<meta name="author" content="">
-	<meta name="description" content=""/>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" >
 	<link rel="stylesheet" href="./app/assets/css/homepage.css" >
 	<title>Inventory Demo | Home Page</title>
@@ -39,7 +38,7 @@ spl_autoload_register(function($class){
 		  <a class="nav-link" href="./create-account/">Create Account</a>
 		</li>
 		<li class="nav-item">
-		  <a class="nav-link disabled" href="./login/">Login</a>
+		  <a class="nav-link" href="./login/">Login</a>
 		</li>
 	  </ul>
 	</div>
@@ -84,71 +83,18 @@ spl_autoload_register(function($class){
 			<img style="margin:0 auto;" src="./app/assets/images/loader.gif">
 		  </span>
 		  <br />
-          <div id="mainItemContainer" class="row">
+        <div id="mainItemContainer" class="row">
 			
-			<!--
-            <div class="col-md-4">
-              <div class="card mb-4 box-shadow">
-                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
-                <div class="card-body">
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                    </div>
-                    <small class="text-muted">9 mins</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card mb-4 box-shadow">
-                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
-                <div class="card-body">
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                    </div>
-                    <small class="text-muted">9 mins</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card mb-4 box-shadow">
-                <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
-                <div class="card-body">
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                    </div>
-                    <small class="text-muted">9 mins</small>
-                  </div>
-                </div>
-              </div>
-            </div>	
-			-->
-			
-			</div>
-		
+		</div>		
 		</div>	
 	</div>
-	
 </main>
-
-
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" ></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" ></script>
 <script>
 var mc = document.getElementById("mainContainer");
-var ml = document.getElementById("mainItemLoading");
 var mf = document.getElementById("mainItemContainer");
 
 window.onload = function(){
@@ -164,12 +110,13 @@ function checkFeaturedStatus(){
 		if (xhr.readyState == 4 && xhr.status == 200) {
 			//var s = JSON.parse(xhr.responseText);
 			var s = JSON.parse(xhr.responseText);
-			console.log(s);
 			if(s.status != "disabled"){
-				
+
 				for (var key in s) {
-					if (p.hasOwnProperty(key)) {
-						console.log(key + " -> " + s[key]);
+					if (s.hasOwnProperty(key)) {
+						if(key != "status"){
+							load(s[key],mf);
+						}	
 					}
 				}
 				
@@ -183,6 +130,25 @@ function checkFeaturedStatus(){
 	xhr.send();
 }
 
+function load(item,e){
+	var ml = document.getElementById("mainItemLoading");
+	var xhr = new XMLHttpRequest();
+	var url = './php/json/homepage/load_featured_items.php?item=' + item;
+	xhr.open('GET',url, true);
+	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+	xhr.onreadystatechange = function(){
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			var s = xhr.responseText;
+			var node = document.createElement("div")
+				node.className = "col-md-4";
+				node.innerHTML = s;
+				
+				e.appendChild(node);
+				ml.innerHTML = "";
+		}
+	};
+	xhr.send();
+}
 </script>
 </body>
 </html>
