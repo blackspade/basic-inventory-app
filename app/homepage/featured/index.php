@@ -133,8 +133,8 @@ $result = mysqli_query($con, $sql);
                             <i class="icon-menu menu-icon"></i> <span class="nav-text">Company</span>
                         </a>
                         <ul aria-expanded="false">
-						    <li><a href="../profile/">Profile</a></li>
-							<li><a href="../settings/">Settings</a></li>
+						    <li><a href="../../company/profile/">Profile</a></li>
+							<li><a href="../../company/settings/">Settings</a></li>
                         </ul>
                     </li>
 				<li>

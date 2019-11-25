@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.4.15.9
--- https://www.phpmyadmin.net
+-- version 4.9.0.1
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Nov 13, 2019 at 12:12 AM
--- Server version: 5.6.37
--- PHP Version: 7.1.8
+-- Host: 127.0.0.1
+-- Generation Time: Nov 25, 2019 at 07:16 PM
+-- Server version: 10.4.6-MariaDB
+-- PHP Version: 7.1.32
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -26,7 +28,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `company_profile`
 --
 
-CREATE TABLE IF NOT EXISTS `company_profile` (
+CREATE TABLE `company_profile` (
   `id` int(11) NOT NULL,
   `company_name` varchar(35) NOT NULL,
   `address` varchar(30) NOT NULL,
@@ -36,15 +38,15 @@ CREATE TABLE IF NOT EXISTS `company_profile` (
   `phone` varchar(15) NOT NULL,
   `email` varchar(90) NOT NULL,
   `fax` varchar(15) NOT NULL,
-  `settings` text NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  `about` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `company_profile`
 --
 
-INSERT INTO `company_profile` (`id`, `company_name`, `address`, `add_address`, `city`, `zip`, `phone`, `email`, `fax`, `settings`) VALUES
-(1, 'INDUSTRIAL INVENTORY LLC.', '2626 MAIN DR.', 'SUITE 200', 'DETROIT', '48209', '313-203-0000', 'QUOTE@IND-INV-LLC.COM', '313-203-0001', '');
+INSERT INTO `company_profile` (`id`, `company_name`, `address`, `add_address`, `city`, `zip`, `phone`, `email`, `fax`, `about`) VALUES
+(1, 'DEMO INVENTORY APP', '2626 MAIN DR.', 'SUITE 200', 'DETROIT', '48209', '313-203-0000', 'QUOTE@IND-INV-LLC.COM', '313-203-0001', '');
 
 --
 -- Indexes for dumped tables
@@ -64,7 +66,9 @@ ALTER TABLE `company_profile`
 -- AUTO_INCREMENT for table `company_profile`
 --
 ALTER TABLE `company_profile`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
