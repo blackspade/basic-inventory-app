@@ -173,6 +173,7 @@ $result = mysqli_query($con, $sql);
 											<th>Email</th>
 											<th>Phone #</th>
 											<th>Fax #</th>
+											<th>About</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -187,6 +188,7 @@ $result = mysqli_query($con, $sql);
 													 '<td data-id="'.$row[0].'" data-header="email" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[7].'</td>'.
 													 '<td data-id="'.$row[0].'" data-header="phone" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[6].'</td>'.
 													 '<td data-id="'.$row[0].'" data-header="fax" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[8].'</td>'.
+													 '<td data-id="'.$row[0].'" data-header="about" ondblclick="updateProfile(event,'.$row[0].');" >'.$row[9].'</td>'.
 													 '</tr>';
 											}
 											

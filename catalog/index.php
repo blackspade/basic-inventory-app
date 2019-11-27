@@ -38,7 +38,9 @@ $result = mysqli_query($con, $sql);
 	#categoryFilterSearch{
 		margin-bottom:10px;
 	}
-	
+	.upperCaseSearch{
+		text-transform: uppercase;
+	}
 	</style>
 </head>
 <body>
@@ -81,7 +83,10 @@ $result = mysqli_query($con, $sql);
 				  <a onclick="setSearchType(event)" data-type="itemNum" class="dropdown-item" >Item #</a>
 				</div>
 			  </div>
-			  <input id="search" data-toggle='tooltip' data-placement='bottom' title='Press (Enter) to start search.'  type="text" class="form-control" placeholder="Exact Search" />
+			  <input id="search" class="form-control upperCaseSearch" onkeyup="sanitizeText(event);" data-toggle='tooltip' data-placement='bottom' title='Press (Enter) to start search.'  type="text" class="form-control" placeholder="Exact Search" maxlength="30" />
+			  <div class="input-group-append">
+				<button class="btn btn-outline-primary" onclick="searchStart(event);" type="button" >Search</button>
+			  </div>		
 			</div>
 		</div>
 	</div>
@@ -122,6 +127,43 @@ var s = document.getElementById("session");
 var l = document.getElementById("loader");
 var n = document.getElementById("categoryNameHolder");
 var err = document.getElementById("searchErrMsg");
+var type = "exact";
+
+function searchStart(e){
+	var s = document.getElementById("search");
+	if( s.value != ""){
+		
+		var temp;
+		switch(type){
+			case "exact":
+				temp = 'e';
+			break;
+			case "like":
+				temp = 'l';
+			break;
+			case "itemNum":
+				temp = 'i';
+			break;
+			
+		}
+		if(temp != 'i'){
+			console.log(s.value.toUpperCase() + ":" + temp);
+		}else{
+			if(isNaN(s.value) != true ){
+				console.log(s.value.toUpperCase() + ":" + temp);
+			}
+		}
+		
+		
+	}
+		
+}
+
+function sanitizeText(event){
+  var str = event.target.value;
+  var i = str.replace(/[&\/\\,'"?<>!@#$%^&*]/g, '');
+  event.target.value = i;
+}
 
 function searchFilter() {
 
@@ -185,7 +227,7 @@ function setSearchType(e){
 	var s = document.getElementById("search");
 	var i = e.target;
 	var t = i.attributes[1].nodeValue;
-	var type;
+	
 	
 	switch(t){
 		case "exact":
@@ -201,7 +243,6 @@ function setSearchType(e){
 			s.placeholder = "Item # Search";
 		break;
 	}
-	console.log(type);
 }
 
 

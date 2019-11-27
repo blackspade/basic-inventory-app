@@ -25,41 +25,20 @@ if(is_ajax_request()){
 		$item['fax'] = $row[8];
 		$item['about'] = $row[9];
 	}
-
-	$img = json_decode($item['image']);
-
-	$img_url = $img->images[0];
-	$item['url']= $img_url;
+		
+	  
+	echo '<div class="col-12 col-md">
+          <h5 class="d-block mb-3 text-muted">'.$item['companyName'].'</h5>
+          
+        </div>
+        <div class="col-6 col-md">
+          <p class="d-block text-muted">'.$item['address'].'</p>
+		  <p class="d-block text-muted">'.$item['city'].', '.$item['zip'].'</p>
+		  <p class="d-block text-muted">PHONE: '.$item['phone'].'</p>
+		  <p class="d-block text-muted">FAX: '.$item['fax'].'</p>
+        </div>';	  
+		  
 	
-	/*
-	if (strlen($item['description']) > 150) {
-
-		// truncate string
-		$stringCut = substr($item['description'], 0, 150);
-		$endPoint = strrpos($stringCut, ' ');
-
-		//if the string doesn't contain any space then it will cut without word basis.
-		$item['description'] = $endPoint? substr($stringCut, 0, $endPoint) : substr($stringCut, 0);
-		$item['description'] .= '... <a href="./catalog/quote-view/?item='.$item["number"].'">Read More</a>';
-	}
-	
-	
-	echo '<div class="card mb-4 box-shadow">
-			<img class="card-img-top" src="./app/master-inventory/uploads/images/'.$item['url'].'" alt="">
-			<div class="card-body">
-			  <p class="card-text"><u>Name</u>: '.$item['name'].'</p>
-			  <p class="card-text"><u>Item #</u>: '.$item['number'].'</p>
-			  <p class="card-text"><u>Description</u>: '.$item['description'].'</p>
-			  <p class="card-text"><u>Category</u>: '.$item['category'].'</p> 
-			  <div class="d-flex justify-content-between align-items-center">
-				<div class="btn-group">
-                      <a href="./catalog/quote-view/?item='.$item["number"].'" class="btn btn-sm btn-outline-secondary">View</a>
-                </div>
-				<p class="card-text">Price: '.$item['price'].'</p>			
-			  </div>
-			</div>
-		  </div>';
-	*/
 }else{
 	exit();
 }

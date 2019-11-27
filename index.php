@@ -91,53 +91,35 @@ spl_autoload_register(function($class){
 </main>
 
 <footer class="container py-5">
-  <div class="row">
-	<div class="col-12 col-md">
-	  <div id="CompanyProfile">	
-	  <a class="navbar-brand" href="./">Demo Inventory App</a>
-	  <p class="d-block mb-3 text-muted"></p>
-	  </div>
-	</div>
-	<div class="col-6 col-md">
-	  <h5>Features</h5>
-	  <ul class="list-unstyled text-small">
-		<li><a class="text-muted" href="#">Cool stuff</a></li>
-		<li><a class="text-muted" href="#">Random feature</a></li>
-		<li><a class="text-muted" href="#">Team feature</a></li>
-		<li><a class="text-muted" href="#">Stuff for developers</a></li>
-		<li><a class="text-muted" href="#">Another one</a></li>
-		<li><a class="text-muted" href="#">Last time</a></li>
-	  </ul>
-	</div>
-	<div class="col-6 col-md">
-	  <h5>Resources</h5>
-	  <ul class="list-unstyled text-small">
-		<li><a class="text-muted" href="#">Resource</a></li>
-		<li><a class="text-muted" href="#">Resource name</a></li>
-		<li><a class="text-muted" href="#">Another resource</a></li>
-		<li><a class="text-muted" href="#">Final resource</a></li>
-	  </ul>
-	</div>
-	<div class="col-6 col-md">
-	  <h5>Resources</h5>
-	  <ul class="list-unstyled text-small">
-		<li><a class="text-muted" href="#">Business</a></li>
-		<li><a class="text-muted" href="#">Education</a></li>
-		<li><a class="text-muted" href="#">Government</a></li>
-		<li><a class="text-muted" href="#">Gaming</a></li>
-	  </ul>
-	</div>
-	<div class="col-6 col-md">
-	  <h5>About</h5>
-	  <ul class="list-unstyled text-small">
-		<li><a class="text-muted" href="#">Team</a></li>
-		<li><a class="text-muted" href="#">Locations</a></li>
-		<li><a class="text-muted" href="#">Privacy</a></li>
-		<li><a class="text-muted" href="#">Terms</a></li>
-	  </ul>
-	</div>
-  </div>
-</footer>
+      <div class="row">
+        <div id="CompanyProfile"></div>
+		
+        <div class="col-6 col-md ml-5">
+          <h5>Resources</h5>
+          <ul class="list-unstyled text-small">
+            <li><a class="text-muted" href="./catalog/">Catalog</a></li>
+            <li><a class="text-muted" href="./create-account/">Create Account</a></li>
+            <li><a class="text-muted" href="./login/">Login</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md">
+			<!--
+          <h5>Resources</h5>
+          <ul class="list-unstyled text-small">
+            <li><a class="text-muted" href="#">Business</a></li>
+            <li><a class="text-muted" href="#">Education</a></li>
+            <li><a class="text-muted" href="#">Government</a></li>
+            <li><a class="text-muted" href="#">Gaming</a></li>
+          </ul>
+		  -->
+        </div>
+        <div class="col-6 col-md">
+			<div id="CompanyAbout">	
+
+			</div>
+        </div>
+      </div>
+    </footer>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" ></script>
@@ -145,28 +127,39 @@ spl_autoload_register(function($class){
 <script>
 var mc = document.getElementById("mainContainer");
 var mf = document.getElementById("mainItemContainer");
-var cp = document.getElementById("CompanyProfile");
+
 
 window.onload = function(){
 	checkFeaturedStatus();
 	loadCompanyProfile();
+	loadCompanyAbout();
 }
 
 function loadCompanyProfile(){
-	var ml = document.getElementById("mainItemLoading");
+	var cp = document.getElementById("CompanyProfile");
 	var xhr = new XMLHttpRequest();
-	var url = './php/json/homepage/load_featured_items.php?item=' + item;
+	var url = './php/json/homepage/load_company_profile.php';
 	xhr.open('GET',url, true);
 	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
 	xhr.onreadystatechange = function(){
 		if (xhr.readyState == 4 && xhr.status == 200) {
 			var s = xhr.responseText;
-			var node = document.createElement("div")
-				node.className = "col-md-4";
-				node.innerHTML = s;
-				
-				e.appendChild(node);
-				ml.innerHTML = "";
+				cp.innerHTML = s;
+		}
+	};
+	xhr.send();
+}
+
+function loadCompanyAbout(){ 
+	var ca = document.getElementById("CompanyAbout");
+	var xhr = new XMLHttpRequest();
+	var url = './php/json/homepage/load_company_about.php';
+	xhr.open('GET',url, true);
+	xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+	xhr.onreadystatechange = function(){
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			var s = xhr.responseText;
+				ca.innerHTML = s;
 		}
 	};
 	xhr.send();
