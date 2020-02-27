@@ -152,8 +152,8 @@ $result = mysqli_query($con, $sql);
 						<i class="icon-menu menu-icon"></i> <span class="nav-text">Categories</span>
 					</a>
 					<ul aria-expanded="false">
-						<li><a href="../add/">Add Category</a></li>
-						<li><a href="../edit">Edit Category</a></li>
+						<li><a href="../../category/add/">Add Category</a></li>
+						<li><a href="../../category/edit">Edit Category</a></li>
 					</ul>
 				</li>
 				

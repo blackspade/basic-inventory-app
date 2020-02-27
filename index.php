@@ -52,7 +52,7 @@ spl_autoload_register(function($class){
 		</ol>
 		<div class="carousel-inner">
 		  <div class="carousel-item active">
-			<img class="first-slide" src="./app/assets/images/warehouse.jpg" alt="Inventory App Background Image">
+			<img class="first-slide" src="./app/assets/images/warehouse-v2.jpg" alt="Inventory App Background Image">
 			<div class="container">
 			  <div class="carousel-caption text-left">
 				<h1 style="margin-left:10px;" ><mark>Explore the Catalog</mark></h1>

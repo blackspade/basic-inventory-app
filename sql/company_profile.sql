@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 4.9.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 25, 2019 at 07:16 PM
--- Server version: 10.4.6-MariaDB
--- PHP Version: 7.1.32
+-- Generation Time: Feb 27, 2020 at 06:21 AM
+-- Server version: 10.4.8-MariaDB
+-- PHP Version: 7.3.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -46,7 +46,7 @@ CREATE TABLE `company_profile` (
 --
 
 INSERT INTO `company_profile` (`id`, `company_name`, `address`, `add_address`, `city`, `zip`, `phone`, `email`, `fax`, `about`) VALUES
-(1, 'DEMO INVENTORY APP', '2626 MAIN DR.', 'SUITE 200', 'DETROIT', '48209', '313-203-0000', 'QUOTE@IND-INV-LLC.COM', '313-203-0001', '');
+(1, 'DEMO INVENTORY APP', '2626 MAIN DR.', 'SUITE 200', 'DETROIT', '48209', '313-203-0000', 'QUOTE@IND-INV-LLC.COM', '313-203-0001', 'WE HAVE THOUSANDS OF PRODUCTS IN STOCK. COMPANY ESTABLISHED 2019.');
 
 --
 -- Indexes for dumped tables
